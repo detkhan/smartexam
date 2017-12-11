@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>SMART EXAM</title>
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+    <link href="http://fonts.googleapis.com/css?family=Roboto:400,300,500,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/material-icons.css">
+    <link rel="stylesheet" href="css/kitchen-sink.css">
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/framework7-icons.css">
+    <link rel="stylesheet" href="css/front.css">
+    <link rel="icon" href="img/icon.png">
+
+  </head>
+  <body class="framework7-root">
+    <!-- Panels Overlay -->
+
+
+    <!-- Status bar overlay for full screen mode (PhoneGap) -->
+        <div class="statusbar-overlay"></div>
+        <!-- Views -->
+        <div class="views">
+          <!-- Your main view, should have "view-main" class -->
+          <div class="view view-main">
+            <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
+            <div class="pages navbar-through">
+
+              <div class="page" data-page="login" class="page navbar-fixed toolbar-fixed">
+                        <!--navbar-->
+                      <div class="navbar">
+                        <div class="navbar-inner">
+                          <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
+                          <div id="left_index" class="left">
+                          	<img src="img/close.png" class="navbar_pagelogo">
+                          </div><!--navbar-left-->
+                          <div class="center navbar_pagename">Sign in</div>
+                          <div id="right_index" class="right">
+
+                          </div><!--navbar-right-->
+                        </div><!--navbar-inner-->
+                      </div><!--navbar-->
+
+                      <div class="page-content defaultpage">
+
+                      	<div id="content">
+              	        	<div class="loginpage">
+              	        		<div class="loginpage_logo">
+              	        			<img src="img/logo.png">
+              	        		</div>
+              	        		<span class="loginpage_text">Please Sign in</span>
+
+              	        		<div class="text-center">
+              	        			<div class="loginpage_form">
+
+              	        				<div class="loginpage_group">
+              	        					<label>NAME.SUR</label>
+              	        					<input id="name_surname" type="text" name="name_surname">
+              	        					<span class="loginpage_note">Fill in your Name - Surname (Ex. NOPPORN.UDO)</span>
+              	        				</div>
+              	        				<div class="loginpage_group">
+              	        					<label>Student Code</label>
+              	        					<input id="student_code" type="text" name="student_code">
+              	        				</div>
+
+              	        				<a href="#" id="login" class="next_btn">Sign in</a>
+              	        			</div>
+              	        		</div>
+              	        	</div>
+                          </div>
+
+                      </div><!--page content-->
+
+
+              </div><!--page-->
+
+
+
+              <div class="page cached" data-page="prpage" class="page navbar-fixed toolbar-fixed">
+                        <!--navbar-->
+                      <div class="navbar">
+                        <div class="navbar-inner">
+                          <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
+                          <div id="left_index" class="left">
+                          	<img src="img/logo.png" class="navbar_pagelogo">
+                          </div><!--navbar-left-->
+                          <div class="center navbar_pagename">Annouce</div>
+                          <div id="right_index" class="right">
+                          	<div class="navmenu">
+                          		<a href="#" data-popover=".popover-nav" class="open-popover">
+              	            		<div class="navmenu_bullet">
+              	            			<div></div>
+              	            			<div></div>
+              	            			<div></div>
+              	            		</div>
+                          		</a>
+
+                          		<!-- Nav popover -->
+              					  <div class="popover popover-nav">
+              					    <div class="popover-inner">
+              					      	<ul class="navmenu_list">
+              					      		<li><a href="prpage.html">Announce</a></li>
+              					      		<li><a href="login.html">Sign out</a></li>
+              					      	</ul>
+              					    </div>
+              					  </div>
+                          	</div>
+                          </div><!--navbar-right-->
+                        </div><!--navbar-inner-->
+                      </div><!--navbar-->
+                      <div class="page-content defaultpage">
+
+                      	<div id="content_prpage">
+
+                          </div><!--content-->
+                      </div><!--page content-->
+
+
+              </div><!--page-->
+
+
+
+
+              <div class="page cached" data-page="prdetail" class="page navbar-fixed toolbar-fixed">
+                        <!--navbar-->
+                      <div class="navbar">
+                        <div class="navbar-inner">
+                          <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
+                          <div id="left_index" class="left">
+                          	<img src="img/logo.png" class="navbar_pagelogo">
+                          </div><!--navbar-left-->
+                          <div class="center navbar_pagename">Exam Details</div>
+                          <div id="right_index" class="right">
+                          	<div class="navmenu">
+                          		<a href="#" data-popover=".popover-nav" class="open-popover">
+              	            		<div class="navmenu_bullet">
+              	            			<div></div>
+              	            			<div></div>
+              	            			<div></div>
+              	            		</div>
+                          		</a>
+
+                          		<!-- Nav popover -->
+              					  <div class="popover popover-nav">
+              					    <div class="popover-inner">
+              					      	<ul class="navmenu_list">
+              					      		<li><a href="prpage.html">Announce</a></li>
+              					      		<li><a href="login.html">Sign out</a></li>
+              					      	</ul>
+              					    </div>
+              					  </div>
+                          	</div>
+
+                          </div><!--navbar-right-->
+                        </div><!--navbar-inner-->
+                      </div><!--navbar-->
+                      <div class="page-content defaultpage">
+
+                      	<div id="content_prdetail">
+
+                          </div>
+
+                      </div><!--page content-->
+
+
+              </div><!--page-->
+
+              <div class="page cached" data-page="examboard" class="page navbar-fixed toolbar-fixed">
+                        <!--navbar-->
+                      <div class="navbar">
+                        <div class="navbar-inner">
+                          <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
+                          <div id="left_index" class="left">
+                          	<img src="img/logo.png" class="navbar_pagelogo">
+                          </div><!--navbar-left-->
+                          <div class="center navbar_pagename">Description Sheet</div>
+                          <div id="right_index" class="right">
+                          	<div class="navmenu">
+                          		<a href="#" data-popover=".popover-nav" class="open-popover">
+              	            		<div class="navmenu_bullet">
+              	            			<div></div>
+              	            			<div></div>
+              	            			<div></div>
+              	            		</div>
+                          		</a>
+
+                          		<!-- Nav popover -->
+              					  <div class="popover popover-nav">
+              					    <div class="popover-inner">
+              					      	<ul class="navmenu_list">
+              					      		<li><a href="prpage.html">Announce</a></li>
+              					      		<li><a href="login.html">Sign out</a></li>
+              					      	</ul>
+              					    </div>
+              					  </div>
+                          	</div>
+                          </div><!--navbar-right-->
+                        </div><!--navbar-inner-->
+                      </div><!--navbar-->
+                      <div class="page-content defaultpage">
+
+                      	<div id="content_examboard">
+
+                          </div>
+
+                      </div><!--page content-->
+
+
+              </div><!--page-->
+
+              <div class="page cached" data-page="multiplechoice" class="page navbar-fixed toolbar-fixed">
+                        <!--navbar-->
+                      <div class="navbar">
+                        <div class="navbar-inner">
+                          <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
+                          <div id="left_index" class="left">
+                          	<img src="img/logo.png" class="navbar_pagelogo">
+                          </div><!--navbar-left-->
+                          <div class="center navbar_counttime">01 : 29 : 59</div>
+                          <div id="right_index" class="right">
+                          	<div class="navmenu">
+                          		<a href="#" data-popover=".popover-nav" class="open-popover">
+              	            		<div class="navmenu_bullet">
+              	            			<div></div>
+              	            			<div></div>
+              	            			<div></div>
+              	            		</div>
+                          		</a>
+
+                          		<!-- Nav popover -->
+              					  <div class="popover popover-nav">
+              					    <div class="popover-inner">
+              					      	<ul class="navmenu_list">
+              					      		<li><a href="prpage.html">Announce</a></li>
+              					      		<li><a href="login.html">Sign out</a></li>
+              					      	</ul>
+              					    </div>
+              					  </div>
+                          	</div>
+                          </div><!--navbar-right-->
+                        </div><!--navbar-inner-->
+                      </div><!--navbar-->
+                      <div class="page-content defaultpage">
+
+                      	<div id="content">
+              	        	<div class="testpage">
+              	        		<a href="choiceselected.html" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>
+              	        		<div class="testpage_completed">
+              	        			<div class="testpage_completed-step">
+              	        				<span class="step_point" style="left: 25%"></span>
+              	        				<div class="step_line">
+              	        					<div style="width: 25%"></div>
+              	        				</div>
+              	        			</div>
+              	        			<span class="testpage_completed-text">Completed 36/120</span>
+              	        		</div>
+
+              	        		<span class="testpage_part">Part 1 Multiple Choice 50 Item (50 Point)</span>
+              	        		<span class="testpage_subject">
+              	        			21.	Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+              	        			<br><br>
+              	        			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+              	        		</span>
+
+
+
+              	        		<div class="testpage_basiccard">
+              	        			<div class="testpage_nav">
+              		        			<a href="multipleimage.html" class="testpage_nav-btn next"><img src="img/btn/arrow-right@3x.png"></a>
+              		        			<a href="#" class="testpage_nav-btn prv back"><img src="img/btn/arrow-left@3x.png"></a>
+              		        		</div>
+
+              		        		<div class="testpage_basiccard-inner">
+              		        			<ul class="testpage_choice">
+              		        				<li><div class="choice">A.<font>จำนวนชุดที่ 1 : 17, 19, 23, 29</font></div></li>
+              		        				<li><div class="choice">B.<font>จำนวนชุดที่ 2 : 14, 17, 23, 29, 31</font></div></li>
+              		        				<li><div class="choice">C.<font>จำนวนชุดที่ 3 : 14, 17, 19, 23, 29</font></div></li>
+              		        				<li><div class="choice">D.<font>จำนวนชุดที่ 4 : 17, 19, 23, 29, 32</font></div></li>
+              		        				<li><div class="choice">E.<font>จำนวนชุดที่ 4 : 17, 19, 23, 29, 32</font></div></li>
+              		        			</ul>
+              		        		</div>
+
+              	        		</div>
+              	        	</div>
+                          </div>
+
+                      </div><!--page content-->
+
+
+              </div><!--page-->
+
+        </div><!--pages-->
+        </div><!--view-main-->
+        </div><!--views-->
+
+  </body>
+  <script type="text/javascript" src="cordova.js"></script>
+  <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="https://framework7.io/dist/js/framework7.min.js"></script>
+  <script type="text/javascript" src="js/init.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/script.js"></script>
+
+
+  </html>
