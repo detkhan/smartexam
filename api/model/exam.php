@@ -108,7 +108,7 @@ public function getPath($set_id)
 {
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT *   FROM `exam_path` a INNER JOIN `examination_type` b ON a.examination_type_id=b.examination_type_id WHERE set_id='$set_id'";
+  SELECT *   FROM `exam_path` a INNER JOIN `examination_type` b ON a.examination_type_id=b.examination_type_id WHERE set_id='$set_id' ORDER BY exam_path_id ASC ";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)
      {
@@ -137,6 +137,7 @@ public function getExamTime($param)
   $register_exam_id=$param['register_exam_id'];
   $clsMyDB = new MyDatabase();
   $time_stamp=strtotime("now");
+  $time_start_stamp=Date("Y-m-d G:i:s");
   $strCondition2 = "
   SELECT *   FROM `register_exam`  WHERE register_exam_id='$register_exam_id' and time_start_stamp <= '$time_stamp'";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
@@ -144,15 +145,17 @@ public function getExamTime($param)
      {
        $response[] =
        [
+         'time_start_stamp' => '0',
          'time_end_stamp' => '0',
          'status' => "false",
        ];
      }
      else{
        foreach ($objSelect2 as $value) {
-         $time_end_stamp=$value['time_end_stamp']-$time_stamp;
+         $time_end_stamp=$value['exam_date']." ".$value['time_end'];
          $response[] =
          [
+           'time_start_stamp' => $time_start_stamp,
            'time_end_stamp' => $time_end_stamp,
            'status' => "success",
          ];
@@ -160,6 +163,6 @@ public function getExamTime($param)
      }
        return $response;
 }
-
+//SELECT *   FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id  INNER JOIN examination d ON c.exam_path_id=d.exam_path_id  ORDER BY d.exam_path_id ASC 
 }
 ?>

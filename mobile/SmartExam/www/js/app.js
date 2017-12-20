@@ -174,23 +174,31 @@ $$("#content_examboard").append(content);
 
 
 class TimeExam {
-starttime(distance){
+starttime(date_start,date_end){
+      var num=0;
   // Update the count down every 1 second
   var x = setInterval(function() {
+var countDownDate = new Date(date_end).getTime();
+var now = new Date(date_start).getTime();
+    var distance = countDownDate - parseInt(now)-num;
       // Time calculations for days, hours, minutes and seconds
-      //var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours1 = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes1 = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds1 = Math.floor((distance % (1000 * 60)) / 1000);
+      var hours = ("0" + hours1).slice(-2);
+      var minutes = ("0" + minutes1).slice(-2);
+      var seconds = ("0" + seconds1).slice(-2);
       // Output the result in an element with id="demo"
-      document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-      + minutes + "m " + seconds + "s ";
-
+      document.getElementById("counttime").innerHTML =hours + ":"
+      + minutes + ":" + seconds;
+num=num+1000;
       // If the count down is over, write some text
       if (distance < 0) {
           clearInterval(x);
-          document.getElementById("demo").innerHTML = "EXPIRED";
+          myApp.alert("หมดเวลาสอบ", 'SMART EXAM');
+          document.getElementById("counttime").innerHTML = "EXPIRED";
+          mainView.router.load({pageName: 'end',ignoreCache:true});
       }
   }, 1000);
 }//function starttime
@@ -204,19 +212,26 @@ $$.each(data, function(i, field){
 if (field.status=="false") {
 myApp.alert("ยังไม่ถึงเวลาสอบ", 'SMART EXAM');
 }else {
-  mainView.router.load({pageName: 'choice',ignoreCache:true});
+var ojb_time_exam=new TimeExam();
+ojb_time_exam.starttime(field.time_start_stamp,field.time_end_stamp);
+mainView.router.load({pageName: 'choice',ignoreCache:true});
 }
 });//each
 });//getJson
 }//checkTimeExam
 }//class  TimeExam
 
+class Examination {
+getExamination(){
 
+}//function getExamination
+}//class Examination
 
 startapp();
 function startapp() {
   //localStorage.removeItem("user_id");
   //localStorage.removeItem("fullname");
+
 var ojb_exam=new Exam();
 ojb_exam.GetListExam();
 mainView.router.load({pageName: 'prpage',ignoreCache:true});
