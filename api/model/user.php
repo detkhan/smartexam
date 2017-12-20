@@ -9,13 +9,14 @@ public function login($param)
   $student_code=$param['student_code'];
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT *   FROM `user` WHERE CONCAT(firstname,'.',lastname) = '$name_surname' AND student_code ='$student_code'";
+  SELECT *   FROM `student` WHERE CONCAT(firstname,'.',lastname) = '$name_surname' AND student_code ='$student_code'";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)
      {
        $response[] =
        [
-         'user_id' => '0',
+         'student_id' => '0',
+         'student_code' => '0',
          'fristname' => '0',
          'lastname' => '0',
          'status' => "false",
@@ -25,7 +26,8 @@ public function login($param)
        foreach ($objSelect2 as $value) {
          $response[] =
          [
-           'user_id' => $value['user_id'],
+           'student_id' => $value['student_id'],
+           'student_code' => $value['student_code'],
            'firstname' => $value['firstname'],
            'lastname' => $value['lastname'],
            'status' => "success",

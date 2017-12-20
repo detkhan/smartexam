@@ -3,10 +3,10 @@ Class MyDatabase
 {
   function MyDatabase()
   {
-    $server="localhost";
-    $user="root";
-    $pass="maysalon007";
-    $database="smartexam";
+    $server="27.254.36.4";
+    $user="revotesting";
+    $pass="revo2007";
+    $database="revotest_smartexam";
     $this->con=mysqli_connect($server,$user,$pass,$database);
     $this->conset=mysqli_set_charset($this->con,'UTF8');
   }//function MyDatabase

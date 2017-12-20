@@ -1,20 +1,19 @@
 <?php
 require_once("model/database.php");
-class sections
+class sets
 {
 
-public function getsection($param)
+public function getSet($exam_id)
 {
-  $student_id=$param['student_id'];
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT *   FROM `register_sec` WHERE student_id = '$student_id'";
+  SELECT *   FROM `set` WHERE exam_id = '$exam_id'";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)
      {
        $response[] =
        [
-         'sec_id' => '0',
+         'set_id' => '0',
          'status' => "false",
        ];
      }
@@ -22,7 +21,7 @@ public function getsection($param)
        foreach ($objSelect2 as $value) {
          $response[] =
          [
-           'sec_id' => $value['sec_id'],
+           'set_id' => $value['set_id'],
            'status' => "success",
          ];
        }
