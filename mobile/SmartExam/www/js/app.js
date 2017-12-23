@@ -59,6 +59,37 @@ class Utility{
   thai['year_name']=parseInt(year)+543;
   return thai;
   }//getDate
+
+examinationTypeFormat(examination_type_id,examination_type_format_id){
+  var formattype=[];
+  switch(examination_type_id) {
+    case '1':
+    switch(examination_type_format_id) {
+      case '1':
+formattype=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+          break;
+      case '2':
+formattype=['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ','ฎ','ฏ','ฐ','ฑ','ฒ','ณ','ด','ต','ถ','ท','ธ','น','บ','ป','ผ','ฝ'];
+          break;
+      case '3':
+formattype=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26'];
+  }
+        break;
+    case '2':
+    switch(examination_type_format_id) {
+      case '1':
+formattype=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+          break;
+      case '2':
+formattype=['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ','ฎ','ฏ','ฐ','ฑ','ฒ','ณ','ด','ต','ถ','ท','ธ','น','บ','ป','ผ','ฝ'];
+          break;
+      case '3':
+formattype=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26'];
+  }
+        break;
+  }
+return formattype;
+}//examinationTypeFormat
 }//class
 
 class Exam {
@@ -139,6 +170,7 @@ checkRegisterSet(array_data){
 
   var param ={student_id:localStorage.student_id,exam_id:exam_id};
   var url = "http://"+hosturl+"/api/exam/checkRegisterSet/";
+  var set_id;
 
   $$.getJSON( url,{parameter:param}
   ,function( data ) {
@@ -148,6 +180,7 @@ checkRegisterSet(array_data){
     <br>\
   ';
   var num;
+  set_id=data[0].set_id;
   $$.each(data[0].path, function(i, field){
   num=i+1;
     content+='\
@@ -161,7 +194,7 @@ checkRegisterSet(array_data){
   </div>\
   <div class="text-right">\
   <a href="#" class="back_btn small back">BACK</a>\
-  <a id="startexam" href="#" class="next_btn small" register_exam_id="'+register_exam_id+'">NEXT</a>\
+  <a id="startexam" href="#" class="next_btn small" register_exam_id="'+register_exam_id+'" set_id="'+set_id+'">NEXT</a>\
   </div>\
   </div>\
   </div>\
@@ -172,10 +205,89 @@ $$("#content_examboard").append(content);
 }//checkRegisterSet
 }//class
 
+class Examination {
+getExamination(set_id,examination_id,pre_next){
+$$("#content_choice").html("");
+  var param ={set_id:set_id,student_id:localStorage.student_id,examination_id:examination_id,pre_next:pre_next};
+  var url = "http://"+hosturl+"/api/examination/getexamination/";
+  var formattype;
+  var content='\
+  <div class="testpage">\
+    <a href="choiceselected.html" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+    <div class="testpage_completed">\
+      <div class="testpage_completed-step">\
+  ';
+  $$.getJSON( url,{parameter:param}
+  ,function( data ) {
+  var progess=(parseInt(data.countanswer)/parseInt(data.examination_count))*100;
+  content+='\
+  <span class="step_point" style="left: '+progess+'%"></span>\
+  <div class="step_line">\
+    <div style="width: '+progess+'%"></div>\
+  </div>\
+</div>\
+<span class="testpage_completed-text">Completed '+data.countanswer+'/'+data.examination_count+'</span>\
+</div>\
+<span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' 50 Item (50 Point)</span>\
+<span class="testpage_subject">\
+</span>\
+'+data.row+'. '+data[0].examination_title+'\
+<div class="testpage_basiccard">\
+  <div class="testpage_nav">\
+    <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+' "><img src="img/btn/arrow-right@3x.png"></a>\
+      ';
+if (data.row==1) {
+  content+='\
+      <a href="#" class="testpage_nav-btn prv back"><img src="img/btn/arrow-left@3x.png"></a>\
+    </div>\
+    <div class="testpage_basiccard-inner">\
+      <ul class="testpage_choice">\
+    ';
+}else {
+  content+='\
+      <a id="prv_btn" href="#" class="testpage_nav-btn prv" set_id="'+set_id+'" examination_id="'+data[0].examination_id+' "><img src="img/btn/arrow-left@3x.png"></a>\
+    </div>\
+    <div class="testpage_basiccard-inner">\
+      <ul class="testpage_choice">\
+    ';
+}
+
+  var examination_type_id=data[0].examination_type_id;
+  var examination_type_format_id=data[0].examination_type_format_id;
+  var ojb_Utility=new Utility();
+  formattype=ojb_Utility.examinationTypeFormat(examination_type_id,examination_type_format_id);
+$$.each(data.choice, function(i, field){
+  if (field.choice_id==data.getanswer) {
+    console.log(field.choice_id);
+    console.log(data.getanswer);
+content+='\
+  <li class="select" choice_id="'+field.choice_id+'"><div class="choice">'+formattype[i]+'.<font>'+field.choice_detail+'</font></div></li>\
+  ';
+}else {
+  content+='\
+  <li choice_id="'+field.choice_id+'"choice_id="'+field.choice_id+'"><div class="choice" >'+formattype[i]+'.<font>'+field.choice_detail+'</font></div></li>\
+  ';
+}
+
+});//each
+content+='\
+</ul>\
+</div>\
+</div>\
+</div>\
+';
+$$("#content_choice").append(content);
+});//getJson
+
+
+mainView.router.load({pageName: 'choice',ignoreCache:true});
+}//function getExamination
+}//class Examination
 
 class TimeExam {
 starttime(date_start,date_end){
       var num=0;
+      $$("#counttime").html("");
   // Update the count down every 1 second
   var x = setInterval(function() {
 var countDownDate = new Date(date_end).getTime();
@@ -203,7 +315,7 @@ num=num+1000;
   }, 1000);
 }//function starttime
 
-checkTimeExam(register_exam_id){
+checkTimeExam(register_exam_id,set_id){
   var param ={register_exam_id:register_exam_id};
   var url = "http://"+hosturl+"/api/exam/getExamTime/";
   $$.getJSON( url,{parameter:param}
@@ -212,20 +324,17 @@ $$.each(data, function(i, field){
 if (field.status=="false") {
 myApp.alert("ยังไม่ถึงเวลาสอบ", 'SMART EXAM');
 }else {
-var ojb_time_exam=new TimeExam();
-ojb_time_exam.starttime(field.time_start_stamp,field.time_end_stamp);
-mainView.router.load({pageName: 'choice',ignoreCache:true});
+  var ojb_time_exam=new TimeExam();
+  ojb_time_exam.starttime(field.time_start_stamp,field.time_end_stamp);
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,'0','normal');
 }
 });//each
 });//getJson
 }//checkTimeExam
 }//class  TimeExam
 
-class Examination {
-getExamination(){
 
-}//function getExamination
-}//class Examination
 
 startapp();
 function startapp() {
@@ -291,6 +400,25 @@ $$(document).on("click", "#examboard", function() {
 
 $$(document).on("click", "#startexam", function() {
 var register_exam_id=$$(this).attr("register_exam_id");
+var set_id=$$(this).attr("set_id");
 var ojb_time_exam=new TimeExam();
-ojb_time_exam.checkTimeExam(register_exam_id);
+ojb_time_exam.checkTimeExam(register_exam_id,set_id);
 });//click login
+
+$$(document).on("click", "#next_btn", function() {
+var choice_id=$$(".select").attr("choice_id");
+var set_id=$$(this).attr("set_id");
+var examination_id=$$(this).attr("examination_id");
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,examination_id,'next');
+//getExamination(set_id,examination_id,pre_next)
+});//click next_btn
+
+$$(document).on("click", "#prv_btn", function() {
+  var choice_id=$$(".select").attr("choice_id");
+  var set_id=$$(this).attr("set_id");
+  var examination_id=$$(this).attr("examination_id");
+  var ojb_examination=new Examination();
+  ojb_examination.getExamination(set_id,examination_id,'pre');
+
+});//click next_btn

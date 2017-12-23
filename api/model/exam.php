@@ -163,6 +163,8 @@ public function getExamTime($param)
      }
        return $response;
 }
-//SELECT *   FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id  INNER JOIN examination d ON c.exam_path_id=d.exam_path_id  ORDER BY d.exam_path_id ASC 
+
+//SELECT *   FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id  INNER JOIN examination d ON c.exam_path_id=d.exam_path_id WHERE examination_id<'1'  ORDER BY d.exam_path_id,examination_id ASC LIMIT 0,1
+ 
 }
 ?>
