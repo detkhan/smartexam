@@ -23,17 +23,35 @@ $examination_id=$param['examination_id'];
           break;
   }
   if ($examination_id==0) {
-  $examination_id_sql="";
-  }else
-  {
-  $examination_id_sql=" AND examination_id $calculate '$examination_id'";
+$calculate=">";
   }
+
+  $examination_id_sql=" examination_id $calculate '$examination_id'";
+
 
   $time_stamp=strtotime("now");
   $clsMyDB = new MyDatabase();
+  /*
   $strCondition2 = "
   SELECT *   FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id  INNER JOIN examination d ON c.exam_path_id=d.exam_path_id WHERE c.set_id='$set_id'  $examination_id_sql     ORDER BY d.exam_path_id,examination_id $asc LIMIT 0,1";
+*/
+  $strCondition2 = "SELECT *  FROM (
+    SELECT @r:=@r+1 'row' ,
+  	dataraw.* FROM
+    (SELECT a.exam_id,c.set_id,c.exam_path_id,exam_path_name,examination_type_id,examination_type_sub_id,examination_type_format_id,examination_id,examination_title FROM
+     exams a INNER JOIN `set` b
+     ON a.exam_id=b.exam_id
+      INNER JOIN exam_path c
+      ON b.set_id=c.set_id
+      INNER JOIN examination d
+      ON c.exam_path_id=d.exam_path_id
+       WHERE c.set_id='$set_id'   ORDER BY d.exam_path_id,examination_id ASC) as dataraw
+  	  ,(SELECT@r:=0)as a
+    )
+    as dataexamination
+    WHERE    $examination_id_sql ORDER BY row $asc LIMIT 0,1";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+
      if(!$objSelect2)
      {
        $response[] =
@@ -138,5 +156,7 @@ public function getCountExamination($param)
 return $response;
 }//getCountExamination
 
+
+//SELECT *,MAX(score)  FROM choice GROUP BY examination_id 
 }
 ?>

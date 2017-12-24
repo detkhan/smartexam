@@ -40,6 +40,42 @@ $student_id=$param['student_id'];
 
 }//function countAnswer
 
+
+public function countAnswerFill($param)
+{
+$set_id=$param['set_id'];
+$student_id=$param['student_id'];
+
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT count(*) as countanswer
+  FROM exams a
+  INNER JOIN `set` b
+  ON a.exam_id=b.exam_id
+  INNER JOIN exam_path c
+  ON b.set_id=c.set_id
+  INNER JOIN examination d
+  ON c.exam_path_id=d.exam_path_id
+  INNER JOIN answer_fill e
+  ON d.examination_id=e.examination_id
+  WHERE c.set_id='$set_id' AND student_id='$student_id'
+  ORDER BY d.exam_path_id,d.examination_id ASC
+";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response=0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['countanswer'];
+       }
+     }
+       return $response;
+
+
+}//function countAnswerFill
+
 public function getAnswer($param)
 {
 $set_id=$param['set_id'];
@@ -79,6 +115,180 @@ $examination_id=$param['examination_id'];
 
 }//function getAnswer
 
+
+
+public function getAnswerFill($param)
+{
+$set_id=$param['set_id'];
+$student_id=$param['student_id'];
+$examination_id=$param['examination_id'];
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT e.detail
+  FROM exams a
+  INNER JOIN `set` b
+  ON a.exam_id=b.exam_id
+  INNER JOIN exam_path c
+  ON b.set_id=c.set_id
+  INNER JOIN examination d
+  ON c.exam_path_id=d.exam_path_id
+  INNER JOIN answer_fill e
+  ON d.examination_id=e.examination_id
+  WHERE c.set_id='$set_id' AND student_id='$student_id'
+  AND e.examination_id='$examination_id'
+  ORDER BY d.exam_path_id,d.examination_id ASC
+";
+
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response=0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['detail'];
+       }
+     }
+       return $response;
+
+
+}//function getAnswer
+
+
+public function addAnswer($param)
+{
+$choice_id=$param['choice_id'];
+$student_id=$param['student_id'];
+$created_at=date("Y-m-d G:i:s");
+$updated_at=date("Y-m-d G:i:s");
+$checkdata=$this->checkAnswer($param);
+  $clsMyDB = new MyDatabase();
+  if ($checkdata==0) {
+    $strinsert ="INSERT INTO  answer (student_id,choice_id,created_at,updated_at) VALUES ('$student_id','$choice_id','$created_at','$updated_at')";
+    $objInsert = $clsMyDB->fncInsertRecord($strinsert);
+    $response[] =
+    [
+      'status' => "add",
+    ];
+  }else {
+    $strupdate ="UPDATE  answer SET student_id='$student_id',choice_id='$choice_id',updated_at='$updated_at' where  answer_id='$checkdata'";
+    $objupdate = $clsMyDB->fncUpdateRecord($strupdate);
+    $response[] =
+    [
+      'status' => "update",
+    ];
+  }
+
+return $response;
+}//function addAnswer
+
+
+
+public function checkAnswer($param)
+{
+  $set_id=$param['set_id'];
+  $student_id=$param['student_id'];
+  $examination_id=$param['examination_id'];
+    $clsMyDB = new MyDatabase();
+    $strCondition2 = "
+    SELECT f.answer_id
+    FROM exams a
+    INNER JOIN `set` b
+    ON a.exam_id=b.exam_id
+    INNER JOIN exam_path c
+    ON b.set_id=c.set_id
+    INNER JOIN examination d
+    ON c.exam_path_id=d.exam_path_id
+    INNER JOIN choice e
+    ON d.examination_id=e.examination_id
+    INNER JOIN answer f
+    ON e.choice_id=f.choice_id
+    WHERE c.set_id='$set_id' AND student_id='$student_id'
+    AND e.examination_id='$examination_id'
+    ORDER BY d.exam_path_id,d.examination_id ASC
+  ";
+       $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+       if(!$objSelect2)
+       {
+         $response=0;
+       }
+       else{
+         foreach ($objSelect2 as $value) {
+           $response=$value['answer_id'];
+         }
+       }
+         return $response;
+
+
+}//function getAnswer
+
+
+
+public function addAnswerFill($param)
+{
+$choice_id=$param['choice_id'];
+$student_id=$param['student_id'];
+$examination_id=$param['examination_id'];
+$created_at=date("Y-m-d G:i:s");
+$updated_at=date("Y-m-d G:i:s");
+$checkdata=$this->checkAnswerFill($param);
+  $clsMyDB = new MyDatabase();
+  if ($checkdata==0) {
+    $strinsert ="INSERT INTO  answer_fill (examination_id,student_id,detail,number_exam,created_at,updated_at) VALUES ('$examination_id','$student_id','$choice_id','1','$created_at','$updated_at')";
+    $objInsert = $clsMyDB->fncInsertRecord($strinsert);
+    $response[] =
+    [
+      'status' => "add",
+    ];
+  }else {
+    $strupdate ="UPDATE  answer_fill SET student_id='$student_id',detail='$choice_id',updated_at='$updated_at' where  answer_fill_id='$checkdata'";
+    $objupdate = $clsMyDB->fncUpdateRecord($strupdate);
+    $response[] =
+    [
+      'status' => "update",
+    ];
+  }
+
+return $response;
+}//function addAnswer
+
+
+
+public function checkAnswerFill($param)
+{
+  $set_id=$param['set_id'];
+  $student_id=$param['student_id'];
+  $examination_id=$param['examination_id'];
+    $clsMyDB = new MyDatabase();
+    $strCondition2 = "
+    SELECT e.answer_fill_id
+      FROM exams a
+      INNER JOIN `set` b
+      ON a.exam_id=b.exam_id
+      INNER JOIN exam_path c
+      ON b.set_id=c.set_id
+      INNER JOIN examination d
+      ON c.exam_path_id=d.exam_path_id
+      INNER JOIN answer_fill e
+      ON e.examination_id=d.examination_id
+    WHERE c.set_id='$set_id' AND student_id='$student_id'
+    AND e.examination_id='$examination_id'
+    ORDER BY d.exam_path_id,d.examination_id ASC
+  ";
+       $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+       if(!$objSelect2)
+       {
+         $response=0;
+       }
+       else{
+         foreach ($objSelect2 as $value) {
+           $response=$value['answer_fill_id'];
+         }
+       }
+         return $response;
+
+
+}//function getAnswer
 
 }
 ?>
