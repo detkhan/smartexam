@@ -11,22 +11,31 @@ $examination_id=$param['examination_id'];
   switch ($param['pre_next']) {
     case 'normal':
     $calculate="=";
-    $asc="ASC";
+    $asc="ASC  LIMIT 0,1";
+    $path="";
       break;
       case 'next':
     $calculate=">";
-    $asc="ASC";
+    $asc="ASC  LIMIT 0,1";
+    $path="";
         break;
         case 'pre':
   $calculate="<";
-  $asc="DESC";
+  $asc="DESC  LIMIT 0,1";
+  $path="";
           break;
+          case 'path':
+    $exam_path_id=$param['exam_path_id'];
+    $calculate=">";
+    $asc="ASC";
+    $path="AND exam_path_id='$exam_path_id'";
+            break;
   }
   if ($examination_id==0) {
 $calculate=">";
   }
 
-  $examination_id_sql=" examination_id $calculate '$examination_id'";
+  $examination_id_sql=" examination_id $calculate '$examination_id' $path";
 
 
   $time_stamp=strtotime("now");
@@ -45,18 +54,19 @@ $calculate=">";
       ON b.set_id=c.set_id
       INNER JOIN examination d
       ON c.exam_path_id=d.exam_path_id
-       WHERE c.set_id='$set_id'   ORDER BY d.exam_path_id,examination_id ASC) as dataraw
+       WHERE c.set_id='$set_id'    ORDER BY d.exam_path_id,examination_id ASC) as dataraw
   	  ,(SELECT@r:=0)as a
     )
     as dataexamination
-    WHERE    $examination_id_sql ORDER BY row $asc LIMIT 0,1";
+    WHERE    $examination_id_sql ORDER BY row $asc";
+  //  var_dump($param);
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
-
      if(!$objSelect2)
      {
        $response[] =
        [
          'exam_id' => '0',
+         'row' => '0',
          'examination_id' => '0',
          'exam_path_id'=>'0',
          'examination_title' => '0',
@@ -73,6 +83,7 @@ $calculate=">";
          $response[] =
          [
            'exam_id' => $value['exam_id'],
+           'row' => $value['row'],
            'examination_id'=> $value['examination_id'],
            'exam_path_id'=> $value['exam_path_id'],
            'examination_title' => $value['examination_title'],
@@ -156,7 +167,95 @@ public function getCountExamination($param)
 return $response;
 }//getCountExamination
 
+public function getLayout($param){
+$set_id=$param['set_id'];
+$student_id=$param['student_id'];
+$clsMyDB = new MyDatabase();
+$strCondition2 = "SELECT *  FROM (
+  SELECT @r:=@r+1 'row' ,
+  dataraw.* FROM
+  (SELECT a.exam_id,c.set_id,c.exam_path_id,exam_path_name,examination_type_id,examination_type_sub_id,examination_type_format_id,examination_id,examination_title FROM
+   exams a INNER JOIN `set` b
+   ON a.exam_id=b.exam_id
+    INNER JOIN exam_path c
+    ON b.set_id=c.set_id
+    INNER JOIN examination d
+    ON c.exam_path_id=d.exam_path_id
+     WHERE c.set_id='$set_id'    ORDER BY d.exam_path_id,examination_id ASC) as dataraw
+    ,(SELECT@r:=0)as a
+  )
+  as dataexamination
+ ORDER BY row ASC";
 
-//SELECT *,MAX(score)  FROM choice GROUP BY examination_id 
+   $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+   if(!$objSelect2)
+   {
+     $response[] =
+     [
+       'exam_id' => '0',
+       'row' => '0',
+       'examination_id' => '0',
+       'exam_path_id'=>'0',
+       'examination_title' => '0',
+       'examination_type_id' => '0',
+       'examination_type_format' => '0',
+       'examination_type_sub_id' => '0',
+       'set_id' => '0',
+       'exam_path_name' => '0',
+       'status' => "false",
+     ];
+   }
+   else{
+     foreach ($objSelect2 as $value) {
+       $examination_type_id=$value['examination_type_id'];
+       $examination_id=$value['examination_id'];
+       $exam_path_id=$value['exam_path_id'];
+       $ojb_answer=new answer();
+       switch ($examination_type_id) {
+         case '1':
+         $param['examination_id']=$examination_id;
+         $getanswer=$ojb_answer->getAnswer($param);
+           break;
+           case '2':
+           $param['examination_id']=$examination_id;
+           $param['exam_path_id']=$exam_path_id;
+           $getanswer=$ojb_answer->getAnswerPair($param);
+             break;
+             case '3':
+
+               break;
+               case '4':
+               $response['getanswer']=$ojb_answer->getAnswer($param);
+                 break;
+                 case '5':
+                 $ojb_choice=new choice();
+                 $response['choice']=$ojb_choice->getchoice($examination_id);
+                 $response['getanswer']=$ojb_answer->getAnswerFill($param);
+                   break;
+
+        }
+
+       $response[] =
+       [
+         'exam_id' => $value['exam_id'],
+         'row' => $value['row'],
+         'examination_id'=> $value['examination_id'],
+         'exam_path_id'=> $value['exam_path_id'],
+         'examination_title' => $value['examination_title'],
+         'examination_type_id' => $value['examination_type_id'],
+         'examination_type_format_id' => $value['examination_type_format_id'],
+         'examination_type_sub_id' => $value['examination_type_sub_id'],
+         'set_id' => $value['set_id'],
+         'exam_path_name' => $value['exam_path_name'],
+         'getanswer' => $getanswer,
+         'status' => "success",
+       ];
+     }
+   }
+
+     return $response;
+}
+
+//SELECT *,MAX(score)  FROM choice GROUP BY examination_id
 }
 ?>

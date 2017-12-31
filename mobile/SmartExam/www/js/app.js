@@ -211,21 +211,23 @@ $$("#content_choice").html("");
   var param ={set_id:set_id,student_id:localStorage.student_id,examination_id:examination_id,pre_next:pre_next};
   var url = "http://"+hosturl+"/api/examination/getexamination/";
   var formattype;
-  var content='\
-  <div class="testpage">\
-    <a href="choiceselected.html" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
-    <div class="testpage_completed">\
-      <div class="testpage_completed-step">\
-  ';
+  var content;
   $$.getJSON( url,{parameter:param}
   ,function( data ) {
   var progess=(parseInt(data.countanswer)/parseInt(data.examination_count))*100;
   var examination_type_id=data[0].examination_type_id;
-  var examination_type_format_id=data[0].examination_type_format_id;
-  var ojb_Utility=new Utility();
-  formattype=ojb_Utility.examinationTypeFormat(examination_type_id,examination_type_format_id);
+
   switch (examination_type_id) {
     case '1':
+    var examination_type_format_id=data[0].examination_type_format_id;
+    var ojb_Utility=new Utility();
+    formattype=ojb_Utility.examinationTypeFormat(examination_type_id,examination_type_format_id);
+    var content='\
+    <div class="testpage">\
+      <a id="choiceselected" set_id="'+set_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+      <div class="testpage_completed">\
+        <div class="testpage_completed-step">\
+    ';
     content+='\
     <span class="step_point" style="left: '+progess+'%"></span>\
     <div class="step_line">\
@@ -237,12 +239,12 @@ $$("#content_choice").html("");
   <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' 50 Item (50 Point)</span>\
   <span class="testpage_subject">\
   </span>\
-  '+data.row+'. '+data[0].examination_title+'\
+  '+data[0].row+'. '+data[0].examination_title+'\
   <div class="testpage_basiccard">\
     <div class="testpage_nav">\
       <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
         ';
-  if (data.row==1) {
+  if (data[0].row==1) {
     content+='\
         <a href="#" class="testpage_nav-btn prv back"><img src="img/btn/arrow-left@3x.png"></a>\
       </div>\
@@ -297,17 +299,127 @@ $$("#content_choice").html("");
     }
 
     });//each
+    content+='\
+    </ul>\
+    </div>\
+    </div>\
+    </div>\
+    ';
+    $$("#content_choice").append(content);
       break;
     case '2':
+    var examination_type_format_id=data[0].examination_type_format_id;
+    var ojb_Utility=new Utility();
+    formattype=ojb_Utility.examinationTypeFormat(examination_type_id,examination_type_format_id);
+    var content='\
+    <div class="testpage">\
+      <a id="choiceselected" set_id="'+set_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+      <div class="testpage_completed">\
+        <div class="testpage_completed-step">\
+    ';
+    content+='\
+    <span class="step_point" style="left: '+progess+'%"></span>\
+    <div class="step_line">\
+      <div style="width: '+progess+'%"></div>\
+    </div>\
+  </div>\
+  <span class="testpage_completed-text">Completed '+data.countanswer+'/'+data.examination_count+'</span>\
+  </div>\
+  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' 50 Item (50 Point)</span>\
+  <div class="testpage_couple">\
+    <div class="row">\
+      <div class="col-50">\
+        <div class="testpage_couple-card">\
+          <span class="testpage_couple-head">Question '+data.row_frist+' - '+data.row_last+'</span>\
+          <ul class="testpage_couple-list">\
+        ';
+        $$.each(data, function(i, field){
 
+          if (field.examination_title) {
+          content+='\
+          <li>\
+            <span>\
+               '+field.row+'\
+               <select class="examination" examination_id="'+field.examination_id+'">\
+               <option>-</option>\
+               ';
+               var num;
+               $$.each(data.choice, function(i2, field2){
+                 num=0;
+                 $$.each(data.getanswer, function(i4, field4){
+                 if (field4.examination_id==field.examination_id &&field4.choice_pair_id==field2.choice_pair_id) {
+                content+='\
+                <option  value="'+field2.choice_pair_id+'" selected>'+formattype[i2]+'</option>\
+';
+num++;
+}
+  });//each
+  if (num==0) {
+    content+='\
+    <option  value="'+field2.choice_pair_id+'">'+formattype[i2]+'</option>\
+  ';
+  }
+
+                });//each
+              content+='\
+               </select>\
+               '+field.examination_title+'\
+            </span>\
+          </li>\
+          ';
+                            }
+        });//each
+        var count_choice=data.choice.length;
+        content+='\
+        </ul>\
+      </div>\
+    </div>\
+        <div class="col-50">\
+          <div class="testpage_couple-card">\
+            <span class="testpage_couple-head">Answer '+formattype[0]+'-'+formattype[count_choice-1]+'</span>\
+            <ul class="testpage_couple-list">\
+            ';
+        $$.each(data.choice, function(i3, field3){
+          content+='\
+<li><span>'+formattype[i3]+'. '+field3.choice_detail+'</span></li>\
+';
+              });//each
+              content+='\
+              </ul>\
+            </div>\
+            ';
+            content+='\
+            </ul>\
+          </div>\
+        </div>\
+      </div>\
+    </div>\
+    <div class="row">\
+      <div class="col-50">\
+        <div class="text-left">\
+          <a id="pre_path"  href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_frist+'" class="back_btn back small">BACK PART</a>\
+        </div>\
+      </div>\
+      <div class="col-50">\
+        <div class="text-right">\
+          <a id="next_path" href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_last+'"  class="next_btn small">NEXT PART</a>\
+        </div>\
+      </div>\
+    </div>\
+  </div>\
+            ';
+            $$("#content_choice").append(content);
     break;
     case '3':
 
     break;
     case '4':
-
-    break;
-    case '5':
+    var content='\
+    <div class="testpage yesno">\
+      <a id="choiceselected" set_id="'+set_id+'"  href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+      <div class="testpage_completed">\
+        <div class="testpage_completed-step">\
+    ';
     content+='\
     <span class="step_point" style="left: '+progess+'%"></span>\
     <div class="step_line">\
@@ -319,12 +431,98 @@ $$("#content_choice").html("");
   <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' 50 Item (50 Point)</span>\
   <span class="testpage_subject">\
   </span>\
-  '+data.row+'. '+data[0].examination_title+'\
+  '+data[0].row+'. '+data[0].examination_title+'\
   <div class="testpage_basiccard">\
     <div class="testpage_nav">\
       <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
         ';
-  if (data.row==1) {
+  if (data[0].row==1) {
+    content+='\
+        <a href="#" class="testpage_nav-btn prv back"><img src="img/btn/arrow-left@3x.png"></a>\
+      </div>\
+      <div class="testpage_basiccard-inner">\
+        <ul class="testpage_choice">\
+      ';
+  }else {
+    content+='\
+        <a id="prv_btn" href="#" class="testpage_nav-btn prv" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-left@3x.png"></a>\
+      </div>\
+      <div class="testpage_basiccard-inner">\
+        <ul class="testpage_choice">\
+      ';
+  }
+    $$.each(data.choice, function(i, field){
+      if (field.choice_id==data.getanswer) {
+        if (!field.choice_img_name) {
+          console.log(field.choice_img_name);
+          content+='\
+            <li class="select" choice_id="'+field.choice_id+'"><div class="choice"><font>'+field.choice_detail+'</font></div></li>\
+            ';
+        }else {
+            console.log("no");
+          content+='\
+          <li class="select" choice_id="'+field.choice_id+'">\
+            <div class="row no-gutter">\
+              <div class="col-70"><div class="choice"><font>'+field.choice_detail+'</font></div></div>\
+              <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="img/'+field.choice_img_name+'"></div></a></div>\
+           </div>\
+          </li>\
+          ';
+        }
+
+    }else {
+      if (!field.choice_img_name) {
+        console.log("yes");
+        content+='\
+        <li choice_id="'+field.choice_id+'"choice_id="'+field.choice_id+'"><div class="choice" ><font>'+field.choice_detail+'</font></div></li>\
+        ';
+      }else {
+        console.log("no");
+        content+='\
+        <li class="select" choice_id="'+field.choice_id+'">\
+          <div class="row no-gutter">\
+            <div class="col-70"><div class="choice"><font>'+field.choice_detail+'</font></div></div>\
+            <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="img/'+field.choice_img_name+'"></div></a></div>\
+         </div>\
+        </li>\
+        ';
+      }
+
+    }
+
+    });//each
+    content+='\
+    </ul>\
+    </div>\
+    </div>\
+    </div>\
+    ';
+    $$("#content_choice").append(content);
+    break;
+    case '5':
+    var content='\
+    <div class="testpage">\
+      <a id="choiceselected" set_id="'+set_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+      <div class="testpage_completed">\
+        <div class="testpage_completed-step">\
+    ';
+    content+='\
+    <span class="step_point" style="left: '+progess+'%"></span>\
+    <div class="step_line">\
+      <div style="width: '+progess+'%"></div>\
+    </div>\
+  </div>\
+  <span class="testpage_completed-text">Completed '+data.countanswer+'/'+data.examination_count+'</span>\
+  </div>\
+  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' 50 Item (50 Point)</span>\
+  <span class="testpage_subject">\
+  </span>\
+  '+data[0].row+'. '+data[0].examination_title+'\
+  <div class="testpage_basiccard">\
+    <div class="testpage_nav">\
+      <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
+        ';
+  if (data[0].row==1) {
     content+='\
         <a href="#" class="testpage_nav-btn prv back"><img src="img/btn/arrow-left@3x.png"></a>\
       </div>\
@@ -353,10 +551,6 @@ $$("#content_choice").html("");
     </div>\
   </div>\
 ';
-    break;
-
-  }
-
 content+='\
 </ul>\
 </div>\
@@ -364,11 +558,80 @@ content+='\
 </div>\
 ';
 $$("#content_choice").append(content);
+    break;
+
+  }
+
+
 });//getJson
 
 
 mainView.router.load({pageName: 'choice',ignoreCache:true});
 }//function getExamination
+
+getLayout(set_id){
+$$("#content_choice").html("");
+var student_id=localStorage.student_id;
+var param ={set_id:set_id,student_id:student_id};
+var url = "http://"+hosturl+"/api/examination/getLayout/";
+var content="";
+content+='\
+<div class="selectedpage">\
+  <span class="selectedpage_note">"Select numeral and go (Green color is done)"</span>\
+  <div class="selectedpage_choice">\
+';
+var path=0;
+var num=0;
+$$.getJSON( url,{parameter:param}
+,function( data ) {
+$$.each(data, function(i, field){
+if (path!=field.exam_path_id) {
+path=field.exam_path_id;
+num++;
+if (field.exam_path_name) {
+content+='\
+<div class="row">\
+  <div class="col-50">\
+<span class="selectedpage_choice-head">Part '+num+':'+field.exam_path_name+'</span>\
+</div>\
+<div class="col-50">\
+<div class="text-right">\
+';
+if (num==1) {
+  content+='\
+    <a href="uncomplete.html" class="next_btn">\
+      <i class="f7-icons">arrow_up</i>\
+      Submit your exam\
+    </a>\
+  </div>\
+  </div>\
+  </div>\
+  ';
+}else {
+  content+='\
+  </div>\
+  </div>\
+  </div>\
+  <div class="selectedpage_choice-list">\
+  ';
+}//else
+
+}//path
+}//new path
+
+});//each
+
+if (content=="") {
+console.log('content='+content);
+}else {
+  $$("#content_choice").append(content);
+}
+
+});//getJson
+
+mainView.router.load({pageName: 'choice',ignoreCache:true});
+}
+
 }//class Examination
 
 class TimeExam {
@@ -442,7 +705,14 @@ class Answer {
 
             break;
             case '4':
-
+            var param ={choice_id:choice_id,student_id:localStorage.student_id,set_id:set_id,examination_id:examination_id};
+            var url = "http://"+hosturl+"/api/answer/addAnswer/";
+            $$.getJSON( url,{parameter:param}
+            ,function( data ) {
+            $$.each(data, function(i, field){
+              console.log(field.status);
+            });//each
+            });//getJson
               break;
               case '5':
               var param ={choice_id:choice_id,student_id:localStorage.student_id,set_id:set_id,examination_id:examination_id};
@@ -458,6 +728,18 @@ class Answer {
     }
 
   }//add_answer
+
+  add_answer_path(item,set_id){
+    console.log(set_id);
+    var param ={item:item,student_id:localStorage.student_id,set_id:set_id};
+    var url = "http://"+hosturl+"/api/answer/addAnswerPath/";
+    $$.getJSON( url,{parameter:param}
+    ,function( data ) {
+    $$.each(data, function(i, field){
+      console.log(field.status);
+    });//each
+    });//getJson
+  }
 }//class Answer
 
 
@@ -554,7 +836,14 @@ switch (examination_type_id) {
 
   break;
   case '4':
-
+  var choice_id=parseInt($$(".select").attr("choice_id"));
+  var ojb_examination=new Examination();
+  ojb_examination.getExamination(set_id,examination_id,'next');
+  console.log("choice_id="+choice_id);
+  if (!isNaN(choice_id)) {
+    var ojb_answer=new Answer();
+    ojb_answer.add_answer(choice_id,set_id,examination_id,examination_type_id);
+  }
   break;
   case '5':
   var wording=$$(".testpage_wording-textbox").val();
@@ -601,7 +890,14 @@ var  examination_type_id=$$(this).attr("examination_type_id");
 
     break;
     case '4':
-
+    var choice_id=parseInt($$(".select").attr("choice_id"));
+    var ojb_examination=new Examination();
+    ojb_examination.getExamination(set_id,examination_id,'pre');
+    console.log("choice_id="+choice_id);
+    if (!isNaN(choice_id)) {
+      var ojb_answer=new Answer();
+      ojb_answer.add_answer(choice_id,set_id,examination_id,examination_type_id);
+    }
     break;
     case '5':
     var wording=$$(".testpage_wording-textbox").val();
@@ -621,4 +917,49 @@ var  examination_type_id=$$(this).attr("examination_type_id");
 
   }
 
+
+
 });//click next_btn
+
+$$(document).on("click", "#next_path", function() {
+var set_id=$$(this).attr("set_id");
+var examination=$$(".examination");
+var examination_id_next=$$(this).attr("examination_id");
+var item=[];
+$.each(examination,function(k,v){
+  var examination_id=$(this).attr('examination_id');
+  var val=$(this).val();
+  item[k]={examination_id:examination_id,choice_pair_id:val};
+	//item[$(this).attr('examination_id')] = $(v).val();
+});
+  var ojb_answer=new Answer();
+  ojb_answer.add_answer_path(item,set_id);
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,examination_id_next,'next');
+
+
+});//click next_path
+
+$$(document).on("click", "#pre_path", function() {
+var set_id=$$(this).attr("set_id");
+var examination_id_pre=$$(this).attr("examination_id");
+var examination=$$(".examination");
+var item=[];
+$.each(examination,function(k,v){
+  var examination_id=$(this).attr('examination_id');
+  var val=$(this).val();
+  item[k]={examination_id:examination_id,choice_pair_id:val};
+	//item[$(this).attr('examination_id')] = $(v).val();
+});
+  var ojb_answer=new Answer();
+  ojb_answer.add_answer_path(item,set_id);
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,examination_id_pre,'pre');
+
+
+});//click pre_path
+$$(document).on("click", "#choiceselected", function() {
+var set_id=$$(this).attr("set_id");
+var ojb_examination=new Examination();
+ojb_examination.getLayout(set_id);
+});//click choiceselected

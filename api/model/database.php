@@ -4,9 +4,9 @@ Class MyDatabase
   function MyDatabase()
   {
     $server="27.254.36.4";
-    $user="revotesting";
-    $pass="revo2007";
-    $database="revotest_smartexam";
+    $user="revoitma_smartex";
+    $pass="f4MJ6T/7L]tH";
+    $database="revoitma_smartex";
     $this->con=mysqli_connect($server,$user,$pass,$database);
     $this->conset=mysqli_set_charset($this->con,'UTF8');
   }//function MyDatabase

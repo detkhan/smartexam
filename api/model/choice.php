@@ -39,5 +39,37 @@ public function getchoice($examination_id)
 
 }//function getchoice
 
+
+public function getchoicePair($exam_path_id)
+{
+
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT  *   FROM choice_pair    WHERE exam_path_id='$exam_path_id'  ORDER BY choice_pair_id ASC";
+  $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response[] =
+       [
+         'choice_pair_id' => '0',
+         'choice_detail' => '0',
+         'status' => "false",
+       ];
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response[] =
+         [
+           'choice_pair_id' => $value['choice_pair_id'],
+           'choice_detail' => $value['choice_detail'],
+           'status' => "success",
+         ];
+       }
+     }
+       return $response;
+
+
+}//function getchoice
+
 }
 ?>

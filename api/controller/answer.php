@@ -34,6 +34,13 @@ $response=$model->getAnswerFill($param);
 return $response;
 }
 
+public function getAnswerPair($param)
+{
+$model=new answers();
+$response=$model->getAnswerPair($param);
+return $response;
+}
+
 
 public function addAnswer($param)
 {
@@ -51,6 +58,17 @@ $response=$model->addAnswerFill($param);
 $data= json_encode($response);
 echo $data;
 }
+
+
+public function addAnswerPath($param)
+{
+$model=new answers();
+$response=$model->addAnswerPath($param);
+$data= json_encode($response);
+echo $data;
+}
+
+
 
 }
 
