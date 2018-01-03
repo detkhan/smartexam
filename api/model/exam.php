@@ -1,5 +1,6 @@
 <?php
 require_once("model/database.php");
+require_once("model/examination.php");
 class exams
 {
 
@@ -27,7 +28,6 @@ public function listexam($param)
          'exam_date' => '0',
          'time_start' => '0',
          'time_end' => '0',
-         'time_stamp' => '0',
          'status' => "false",
        ];
      }
@@ -36,6 +36,12 @@ public function listexam($param)
          $time_start=strtotime($value['exam_date']." ".$value['time_start'] );
          $time_end=strtotime($value['exam_date']." ".$value['time_end'] );
          $time_total=($time_end-$time_start)/60;
+         $exam_id=$value['exam_id'];
+         $countset=$this->countSet($exam_id);
+         //$ojb_examination=new Examination;
+         //$param['set_id']=
+         //$set_id=$param['set_id']
+        // $number_exam=$ojb_examination.getCountExamination($param);
          $response[] =
          [
            'exam_id' => $value['exam_id'],
@@ -44,10 +50,10 @@ public function listexam($param)
            'short_detail' => $value['short_detail'],
            'detail' => $value['detail'],
            'exam_date' => $value['exam_date'],
+           'countset' => $countset,
            'time_start' => $value['time_start'],
            'time_end' => $value['time_end'],
            'time_total' => $time_total,
-           'time_stamp' => $value['time_stamp'],
            'status' => "success",
          ];
        }
@@ -56,6 +62,27 @@ public function listexam($param)
 
 
 }//function listexam
+
+public function countSet($exam_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT  count(*) as countset   FROM `set` WHERE exam_id= '$exam_id'";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response=0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['countset'];
+
+       }
+     }
+
+       return $response;
+
+}
 
 public function getRegisterSet($param)
 {

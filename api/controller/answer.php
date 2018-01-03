@@ -20,6 +20,13 @@ $response=$model->countAnswerFill($param);
 return $response;
 }
 
+public function countAnswerPath($param)
+{
+$model=new answers();
+$response=$model->countAnswerPath($param);
+return $response;
+}
+
 public function getAnswer($param)
 {
 $model=new answers();

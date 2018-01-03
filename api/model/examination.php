@@ -26,16 +26,20 @@ $examination_id=$param['examination_id'];
           break;
           case 'path':
     $exam_path_id=$param['exam_path_id'];
-    $calculate=">";
+    $calculate=">=";
     $asc="ASC";
-    $path="AND exam_path_id='$exam_path_id'";
+    $path="exam_path_id='$exam_path_id'";
             break;
   }
   if ($examination_id==0) {
 $calculate=">";
   }
-
+if ($param['pre_next']==path) {
+  $examination_id_sql="$path";
+}else {
   $examination_id_sql=" examination_id $calculate '$examination_id' $path";
+}
+
 
 
   $time_stamp=strtotime("now");
@@ -225,12 +229,12 @@ $strCondition2 = "SELECT *  FROM (
 
                break;
                case '4':
-               $response['getanswer']=$ojb_answer->getAnswer($param);
+               $param['examination_id']=$examination_id;
+               $getanswer=$ojb_answer->getAnswer($param);
                  break;
                  case '5':
-                 $ojb_choice=new choice();
-                 $response['choice']=$ojb_choice->getchoice($examination_id);
-                 $response['getanswer']=$ojb_answer->getAnswerFill($param);
+                 $param['examination_id']=$examination_id;
+                 $getanswer=$ojb_answer->getAnswerFill($param);
                    break;
 
         }

@@ -27,7 +27,8 @@ if ($examination_type_id !=2) {
   $ojb_answer=new answer();
   $countanswer=$ojb_answer->countAnswer($param);
   $countanswer_fill=$ojb_answer->countAnswerFill($param);
-  $response['countanswer']=$countanswer+$countanswer_fill;
+  $countanswer_path=$ojb_answer->countAnswerPath($param);
+  $response['countanswer']=$countanswer+$countanswer_fill+$countanswer_path;
 }
 switch ($examination_type_id) {
   case '1':
@@ -38,6 +39,7 @@ switch ($examination_type_id) {
     case '2':
 $param['pre_next']="path";
 $param['exam_path_id']=$exam_path_id;
+$param['examination_id']=0;
 $response=$model->getexamination($param);
 $number_row=count($response);
 $response['row_frist']=$response[0]['row'];
@@ -50,7 +52,8 @@ $response['row_exam_path']=$model->getNumberExamPath($exam_path_id);
 $response['examination_count']=$model->getCountExamination($param);
 $countanswer=$ojb_answer->countAnswer($param);
 $countanswer_fill=$ojb_answer->countAnswerFill($param);
-$response['countanswer']=$countanswer+$countanswer_fill;
+$countanswer_path=$ojb_answer->countAnswerPath($param);
+$response['countanswer']=$countanswer+$countanswer_fill+$countanswer_path;
 
       break;
       case '3':
