@@ -26,3 +26,24 @@ var mySwiper = myApp.swiper('.swiper-container', {
 //var hosturl="127.0.0.1/smartexam";
 var hosturl="smartexam.revoitmarketing.com";
 //var hosturl="192.168.1.104/apk";
+document.addEventListener('deviceready', function () {
+    // Android customization
+    cordova.plugins.backgroundMode.setDefaults({ text:'Doing heavy tasks.'});
+    // Enable background mode
+    cordova.plugins.backgroundMode.enable();
+    // Called when background mode has been activated
+    cordova.plugins.backgroundMode.onactivate = function () {
+      if (cordova.plugins.backgroundMode.wakeUp()) {
+        alert("test");
+      }
+      //cordova.plugins.backgroundMode.unlock(alert("wakeup"));
+        setTimeout(function () {
+            // Modify the currently displayed notification
+
+            cordova.plugins.backgroundMode.configure({
+                text:'Running in background for more than 5s now.'
+            });
+        }, 5000);
+    }
+
+}, false);

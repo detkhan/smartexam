@@ -186,7 +186,6 @@ checkRegisterSet(array_data){
           '+short_detail+'\
           <br><br>\
       ระยะเวลาทำข้อสอบ '+time_total+' นาที<br>\
-      ข้อสอบ 1 ชุด จำนวน 90 ข้อ\
         </span>\
       </div>\
   ';
@@ -199,7 +198,7 @@ checkRegisterSet(array_data){
   ,function( data ) {
   content+='\
   <div class="boardpage_list">\
-    <span>'+data[0].set_name+' มี 90 ข้อ</span>\
+    <span>'+data[0].set_name+' มี '+data[0].pathnumber+' ข้อ</span>\
     <br>\
   ';
   var num;
@@ -209,7 +208,7 @@ checkRegisterSet(array_data){
     content+='\
     <div class="row no-gutter">\
       <div class="col-75"><span>ส่วนที่ '+num+' '+field.exam_path_name+' </span></div>\
-      <div class="col-25"><span class="text-right">50 ข้อ</span></div>\
+      <div class="col-25"><span class="text-right">'+field.total+' ข้อ</span></div>\
     </div>\
     ';
   });//each
@@ -271,10 +270,40 @@ $$("#content_choice").html("");
   </div>\
   <span class="testpage_completed-text">Completed '+data.countanswer+'/'+data.examination_count+'</span>\
   </div>\
-  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' 50 Item (50 Point)</span>\
+  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' '+data.number_examination+' Item ('+data.score+' Point)</span>\
   <span class="testpage_subject">\
+'+data[0].row+'. '+data[0].examination_title+'\
+';
+if (data.story) {
+
+
+  content+='\
   </span>\
-  '+data[0].row+'. '+data[0].examination_title+'\
+  <div class="testpage_read">\
+    <a href="#" class="next_btn open-popup" data-popup=".popup-img">\
+      <i class="f7-icons">search_strong</i>\
+      READ STORY\
+    </a>\
+  </div>\
+  <!-- Images Popup -->\
+<div class="popup popup-img">\
+  <div class="content-block">\
+    <div class="imgpopup story">\
+        <div class="imgpopup_inner">\
+          <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
+                  <div class="imgpopup_story">\
+                       <span class="imgpopup_story-head">Reading & Answer</span>\
+                       <span class="imgpopup_story-text">\
+'+data.story+'\
+                       </span>\
+                  </div>\
+        </div>\
+      </div>\
+  </div>\
+</div>\
+';
+}
+    content+='\
   <div class="testpage_basiccard">\
     <div class="testpage_nav">\
       <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
@@ -463,7 +492,7 @@ num++;
   </div>\
   <span class="testpage_completed-text">Completed '+data.countanswer+'/'+data.examination_count+'</span>\
   </div>\
-  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' 50 Item (50 Point)</span>\
+  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' '+data.number_examination+' Item ('+data.score+' Point)</span>\
   <span class="testpage_subject">\
   </span>\
   '+data[0].row+'. '+data[0].examination_title+'\
@@ -960,16 +989,19 @@ class Answer {
 
 
 
+
+
+
 startapp();
 function startapp() {
-  localStorage.removeItem("student_id");
-  localStorage.removeItem("student_code");
-  localStorage.removeItem("fullname");
-/*
+//  localStorage.removeItem("student_id");
+//  localStorage.removeItem("student_code");
+//  localStorage.removeItem("fullname");
+
 var ojb_exam=new Exam();
 ojb_exam.GetListExam();
 mainView.router.load({pageName: 'prpage',ignoreCache:true});
-*/
+
 
 }
 $$(document).on("click", "#login", function() {

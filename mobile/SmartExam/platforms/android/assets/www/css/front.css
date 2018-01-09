@@ -326,7 +326,7 @@ animation-delay: 1.5s;
   .testpage_completed-step .step_line > div{height: 1.5px;}
   .testpage_completed-text{font-size: 22.56px; margin-top: 7.52px;}
   .testpage_part{font-size: 17.29px; margin-top: 15.04px;}
-  .testpage_subject{font-size: 10.53px; margin-top: 15.04px; max-height: 82.71px; padding-right: 11.28px;}
+  .testpage_subject{font-size: 10.53px; margin-top: 15.04px; max-height: 56px; padding-right: 11.28px;}
   .testpage_overall{top: 32.33px; left: 43.61px;}
   .testpage_overall > img{width: 22.56px;}
   .testpage_basiccard{height: 330.83px; bottom: 30.08px; width: 332.33px;}
