@@ -11,6 +11,8 @@
     "license": "Apache-2.0",
     "dependencies": {
         "cordova-android": "^6.2.3",
+        "cordova-plugin-background-mode": "git+https://github.com/katzer/cordova-plugin-background-mode.git",
+        "cordova-plugin-device": "^2.0.1",
         "cordova-plugin-whitelist": "1"
     },
     "cordova": {
