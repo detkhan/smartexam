@@ -260,6 +260,62 @@ $strCondition2 = "SELECT *  FROM (
      return $response;
 }
 
+public function getCountExaminationPath($exam_path_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  COUNT(*) as number_examination
+  FROM
+  examination a
+  LEFT JOIN exam_path b
+  ON a.exam_path_id=b.exam_path_id
+  WHERE
+  b.exam_path_id='$exam_path_id'
+";
+  $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response =0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['number_examination'];
+       }
+     }
+       return $response;
+
+
+}//function getNumberExamination
+
+public function getStory($examination_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  story_detail
+  FROM
+  examination a
+  LEFT JOIN examination_story b
+  ON a.examination_id=b.examination_id
+  WHERE
+  b.examination_id='$examination_id'
+";
+  $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response =0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['story_detail'];
+       }
+     }
+       return $response;
+
+
+}//function getNumberExamination
+
 //SELECT *,MAX(score)  FROM choice GROUP BY examination_id
 }
 ?>

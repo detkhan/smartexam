@@ -6,16 +6,21 @@ class exams
 
 public function listexam($param)
 {
-  $sec_id=$param[0]['sec_id'];
+  foreach ($param as $key => $value) {
+  $sec_id[]=$value['sec_id'];
+  }
+
+
   if (sizeof($sec_id)>1) {
   $sec_id=implode(',',$sec_id);
   }
-
+//var_dump($sec_id);
   $time_stamp=strtotime("now");
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT *   FROM `exams` a INNER JOIN `register_exam` b ON a.exam_id = b.exam_id WHERE sec_id IN ('$sec_id') AND time_end_stamp >= '$time_stamp'";
+  SELECT *   FROM `exams` a INNER JOIN `register_exam` b ON a.exam_id = b.exam_id WHERE sec_id IN ($sec_id) AND time_end_stamp >= '$time_stamp'";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     //var_dump($strCondition2);
      if(!$objSelect2)
      {
        $response[] =
@@ -135,7 +140,19 @@ public function getPath($set_id)
 {
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT *   FROM `exam_path` a INNER JOIN `examination_type` b ON a.examination_type_id=b.examination_type_id WHERE set_id='$set_id' ORDER BY exam_path_id ASC ";
+  SELECT
+  a.exam_path_id,
+  a.exam_path_name,
+  b.examination_type_name,
+  COUNT(examination_id) as total
+  FROM `exam_path` a
+  INNER JOIN `examination_type` b
+  ON a.examination_type_id=b.examination_type_id
+  INNER JOIN `examination` c
+  ON a.exam_path_id=c.exam_path_id
+  WHERE set_id='$set_id'
+  GROUP BY a.exam_path_id   ORDER BY a.exam_path_id  ASC
+";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)
      {
@@ -144,17 +161,55 @@ public function getPath($set_id)
          'exam_path_id' => '0',
          'exam_path_name' => '0',
          'examination_type_name' => '0',
+         'total' => '0',
+         'sum_total' => '0',
        ];
      }
      else{
+       $sum_total=0;
        foreach ($objSelect2 as $value) {
+         $sum_total+=$value['total'];
          $response[] =
          [
            'exam_path_id' => $value['exam_path_id'],
            'exam_path_name' => $value['exam_path_name'],
            'examination_type_name' => $value['examination_type_name'],
+           'total' => $value['total'],
          ];
        }
+       //$response['sum_total']=$sum_total;
+     }
+       return $response;
+}
+
+public function getPathNumber($set_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  a.exam_path_id,
+  a.exam_path_name,
+  b.examination_type_name,
+  COUNT(examination_id) as total
+  FROM `exam_path` a
+  INNER JOIN `examination_type` b
+  ON a.examination_type_id=b.examination_type_id
+  INNER JOIN `examination` c
+  ON a.exam_path_id=c.exam_path_id
+  WHERE set_id='$set_id'
+  GROUP BY a.exam_path_id   ORDER BY a.exam_path_id  ASC
+";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+$response=0;
+     }
+     else{
+       $response=0;
+       foreach ($objSelect2 as $value) {
+         $response+=$value['total'];
+       }
+       //$response['sum_total']=$sum_total;
      }
        return $response;
 }
@@ -163,8 +218,8 @@ public function getExamTime($param)
 {
   $register_exam_id=$param['register_exam_id'];
   $clsMyDB = new MyDatabase();
-  $time_stamp=strtotime("now");
-  $time_start_stamp=Date("Y-m-d G:i:s");
+  $time_stamp=strtotime("now")+(3600*7);
+  $time_start_stamp=Date("Y-m-d G:i:s",$time_stamp);
   $strCondition2 = "
   SELECT *   FROM `register_exam`  WHERE register_exam_id='$register_exam_id' and time_start_stamp <= '$time_stamp'";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);

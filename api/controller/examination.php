@@ -34,7 +34,10 @@ switch ($examination_type_id) {
   case '1':
   $ojb_choice=new choice();
   $response['choice']=$ojb_choice->getchoice($examination_id);
+  $response['score']=$ojb_choice->getscore($exam_path_id);
+  $response['number_examination']=$model->getCountExaminationPath($exam_path_id);
   $response['getanswer']=$ojb_answer->getAnswer($param);
+  $response['story']=$model->getStory($examination_id);
     break;
     case '2':
 $param['pre_next']="path";
@@ -62,6 +65,8 @@ $response['countanswer']=$countanswer+$countanswer_fill+$countanswer_path;
         case '4':
         $ojb_choice=new choice();
         $response['choice']=$ojb_choice->getchoice($examination_id);
+        $response['score']=$ojb_choice->getscore($exam_path_id);
+        $response['number_examination']=$model->getCountExaminationPath($exam_path_id);
         $response['getanswer']=$ojb_answer->getAnswer($param);
           break;
           case '5':

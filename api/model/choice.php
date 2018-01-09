@@ -71,5 +71,46 @@ public function getchoicePair($exam_path_id)
 
 }//function getchoice
 
+
+public function getscore($exam_path_id)
+{
+
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  SUM(maxscore) as score_total
+  FROM
+  (
+  SELECT
+  a.choice_id as choice_id,
+  b.examination_id,
+  choice_detail,
+  MAX(score) as maxscore
+  FROM choice a
+  LEFT JOIN examination b
+  ON a.examination_id=b.examination_id
+  LEFT JOIN exam_path c
+  ON c.exam_path_id=b.exam_path_id
+  WHERE
+  c.exam_path_id='$exam_path_id'
+  GROUP BY b.examination_id
+  ORDER BY a.choice_id ASC
+  )as dataraw
+";
+  $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response =0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['score_total'];
+       }
+     }
+       return $response;
+
+
+}//function getscore
+
 }
 ?>

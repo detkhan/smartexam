@@ -20,6 +20,13 @@ public function getchoicePair($exam_path_id)
   return $response;
 }
 
+public function getscore($exam_path_id)
+{
+  $model=new choices();
+  $response=$model->getscore($exam_path_id);
+  return $response;
+}
+
 }
 
  ?>

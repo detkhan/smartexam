@@ -38,7 +38,9 @@ $response=$response1;
 
 
 $responsePath=$model->getPath($response[0]['set_id']);
+$responsePathNumber=$model->getPathNumber($response[0]['set_id']);
 $response[0]['path']=$responsePath;
+$response[0]['pathnumber']=$responsePathNumber;
   $data= json_encode($response);
   echo $data;
 }
