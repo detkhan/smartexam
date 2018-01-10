@@ -314,7 +314,35 @@ public function getStory($examination_id)
        return $response;
 
 
-}//function getNumberExamination
+}//function getStory
+
+public function getImage($examination_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  examination_img_name
+  FROM
+  examination a
+  LEFT JOIN examination_img b
+  ON a.examination_id=b.examination_id
+  WHERE
+  b.examination_id='$examination_id'
+";
+  $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response =0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['examination_img_name'];
+       }
+     }
+       return $response;
+
+
+}//function getImage
 
 //SELECT *,MAX(score)  FROM choice GROUP BY examination_id
 }

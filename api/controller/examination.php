@@ -38,6 +38,7 @@ switch ($examination_type_id) {
   $response['number_examination']=$model->getCountExaminationPath($exam_path_id);
   $response['getanswer']=$ojb_answer->getAnswer($param);
   $response['story']=$model->getStory($examination_id);
+  $response['image']=$model->getImage($examination_id);
     break;
     case '2':
 $param['pre_next']="path";

@@ -15,7 +15,7 @@ public function listexam($param)
   $sec_id=implode(',',$sec_id);
   }
 //var_dump($sec_id);
-  $time_stamp=strtotime("now");
+  $time_stamp=strtotime("now")+(3600*7);
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
   SELECT *   FROM `exams` a INNER JOIN `register_exam` b ON a.exam_id = b.exam_id WHERE sec_id IN ($sec_id) AND time_end_stamp >= '$time_stamp'";
@@ -43,6 +43,7 @@ public function listexam($param)
          $time_total=($time_end-$time_start)/60;
          $exam_id=$value['exam_id'];
          $countset=$this->countSet($exam_id);
+         $countexamination=$this->countExamination($exam_id);
          //$ojb_examination=new Examination;
          //$param['set_id']=
          //$set_id=$param['set_id']
@@ -56,6 +57,7 @@ public function listexam($param)
            'detail' => $value['detail'],
            'exam_date' => $value['exam_date'],
            'countset' => $countset,
+           'countexamination' => $countexamination,
            'time_start' => $value['time_start'],
            'time_end' => $value['time_end'],
            'time_total' => $time_total,
@@ -244,6 +246,33 @@ public function getExamTime($param)
        }
      }
        return $response;
+}
+
+public function countExamination($exam_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT count(*) as examination_count,b.set_id
+  FROM exams a
+  INNER JOIN `set` b
+  ON a.exam_id=b.exam_id
+  INNER JOIN exam_path c
+  ON b.set_id=c.set_id
+  INNER JOIN examination d
+  ON c.exam_path_id=d.exam_path_id
+  WHERE a.exam_id='$exam_id'    GROUP BY b.set_id ORDER BY b.set_id,examination_id ASC LIMIT 0,1
+  ";
+       $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+       if(!$objSelect2)
+       {
+  $response=0;
+       }
+       else{
+         foreach ($objSelect2 as $value) {
+           $response=$value['examination_count'];
+         }
+       }
+         return $response;
 }
 
 //SELECT *   FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id  INNER JOIN examination d ON c.exam_path_id=d.exam_path_id WHERE examination_id<'1'  ORDER BY d.exam_path_id,examination_id ASC LIMIT 0,1

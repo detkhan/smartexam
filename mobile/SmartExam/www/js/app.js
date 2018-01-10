@@ -119,6 +119,9 @@ class Exam {
 
 GetListExam(){
   $$("#content_prpage").html("");
+  var content='\
+  <div class="prpage">\
+  ';
   var param ={student_id:localStorage.student_id};
   var url = "http://"+hosturl+"/api/exam/listexam/";
   $$.getJSON( url,{parameter:param}
@@ -132,8 +135,7 @@ var exam_dateraw=field.exam_date;
 var ojb_Utility=new Utility();
 var datethai=ojb_Utility.getdate(exam_dateraw);
 var datethainame=datethai['day']+' '+datethai['month_name']+'  '+datethai['year_name'];
-var content='\
-<div class="prpage">\
+content+='\
   <a id="prdetail" href="#prdetail" subject="'+field.subject+'" datethainame="'+datethainame+'" detail="'+field.detail+'" exam_id="'+field.exam_id+'" time_total="'+field.time_total+'"  time_start="'+field.time_start+'" time_end="'+field.time_end+'" short_detail="'+field.short_detail+'" register_exam_id="'+field.register_exam_id+'">\
     <div class="card prpage_card">\
       <div class="prpage_date">\
@@ -146,17 +148,18 @@ var content='\
         '+field.short_detail+'\
         <br><br>\
       ระยะเวลาทำข้อสอบ '+field.time_total+' นาที<br>\
-      ข้อสอบ '+field.countset+' ชุด จำนวน 120 ข้อ\
+      ข้อสอบ '+field.countset+' ชุด จำนวน '+field.countexamination+' ข้อ\
       </span>\
     </div>\
 </div>\
   </a>\
-</div>\
 ';
-$$("#content_prpage").append(content);
 }//if else
   });//each
-
+  content+='\
+  </div>\
+  ';
+  $$("#content_prpage").append(content);
   });//getJson
 }//GetListExam
 checkRegisterSet(array_data){
@@ -245,7 +248,7 @@ $$("#content_choice").html("");
   if (progess==100) {
   console.log("progess==100");
   var ojb_examination=new Examination();
-  ojb_examination.complete(set_id);
+  ojb_examination.complete(total,set_id);
   } else {
   console.log("progess!=100");
   var ojb_examination=new Examination();
@@ -303,6 +306,42 @@ if (data.story) {
 </div>\
 ';
 }
+if (data.image) {
+content+='\
+</span>\
+<div class="testpage_read">\
+  <a href="#" class="next_btn open-popup" data-popup=".popup-img">\
+    <i class="f7-icons">search_strong</i>\
+    READ MORE.\
+  </a>\
+</div>\
+<!-- Images Popup -->\
+<div class="popup popup-img">\
+<div class="content-block">\
+<div class="imgpopup">\
+    <div class="imgpopup_inner">\
+      <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
+    </div>\
+    <img id="img_popup" src="'+data.image+'" class="imgpopup_img">\
+  </div>\
+</div>\
+</div>\
+';
+}else {
+  content+='\
+  <!-- Images Popup -->\
+  <div class="popup popup-img">\
+  <div class="content-block">\
+  <div class="imgpopup">\
+      <div class="imgpopup_inner">\
+        <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
+      </div>\
+      <img id="img_popup" src="" class="imgpopup_img">\
+    </div>\
+  </div>\
+  </div>\
+  ';
+}
     content+='\
   <div class="testpage_basiccard">\
     <div class="testpage_nav">\
@@ -336,7 +375,7 @@ if (data.story) {
           <li class="select" choice_id="'+field.choice_id+'">\
             <div class="row no-gutter">\
               <div class="col-70"><div class="choice">'+formattype[i]+'.<font>'+field.choice_detail+'</font></div></div>\
-              <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="img/'+field.choice_img_name+'"></div></a></div>\
+              <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img id="img_choice" src="img/'+field.choice_img_name+'"></div></a></div>\
            </div>\
           </li>\
           ';
@@ -666,7 +705,7 @@ content+='\
 ';
 if (num==1) {
   content+='\
-    <a href="uncomplete.html" class="next_btn">\
+    <a id="submit" href="" class="next_btn">\
       <i class="f7-icons">arrow_up</i>\
       Submit your exam\
     </a>\
@@ -1246,3 +1285,12 @@ $$(document).on("click", "#menu_logout", function() {
 var ojb_user=new User();
 ojb_user.logout();
 });//click menu_logout
+$$(document).on("click", "#submit", function() {
+var ojb_user=new User();
+ojb_user.logout();
+});//click menu_logout
+
+$$(document).on("click", "#img_choice", function() {
+var img=$$(this).attr("src");
+var img_popup=$$("#img_popup").attr("src",img);
+});//click img_choice
