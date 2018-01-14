@@ -28,34 +28,22 @@ var hosturl="smartexam.revoitmarketing.com";
 //var hosturl="192.168.1.104/apk";
 document.addEventListener('deviceready', function () {
     // Android customization
-    cordova.plugins.backgroundMode.setDefaults({ text:'คุณกำลังสอบอยู่เวลายังนับไปเรื่อย ๆ นะค่ะ.'});
+    cordova.plugins.backgroundMode.setDefaults({ text:'Doing heavy tasks.'});
     // Enable background mode
     cordova.plugins.backgroundMode.enable();
     // Called when background mode has been activated
     cordova.plugins.backgroundMode.onactivate = function () {
       if (cordova.plugins.backgroundMode.wakeUp()) {
-
+        alert("test");
       }
-      var num=0;
-      var text='';
       //cordova.plugins.backgroundMode.unlock(alert("wakeup"));
-      /*
         setTimeout(function () {
-          num+=5;
             // Modify the currently displayed notification
-            if (num<60) {
-              text="คุณกดปิดโปรแกรมมาแล้วเป็นเวลา "+num+"วินาที";
-            }else {
-              num=("0" + (num/60)).slice(-2);
-              text="คุณกดปิดโปรแกรมมาแล้วเป็นเวลา "+num+"นาที";
-            }
 
             cordova.plugins.backgroundMode.configure({
-                text:text
+                text:'Running in background for more than 5s now.'
             });
         }, 5000);
-        */
     }
-
 
 }, false);

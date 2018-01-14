@@ -375,7 +375,7 @@ content+='\
           <li class="select" choice_id="'+field.choice_id+'">\
             <div class="row no-gutter">\
               <div class="col-70"><div class="choice">'+formattype[i]+'.<font>'+field.choice_detail+'</font></div></div>\
-              <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img id="img_choice" src="img/'+field.choice_img_name+'"></div></a></div>\
+              <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img id="img_choice" src="'+field.choice_img_name+'"></div></a></div>\
            </div>\
           </li>\
           ';
@@ -393,7 +393,7 @@ content+='\
         <li  choice_id="'+field.choice_id+'">\
           <div class="row no-gutter">\
             <div class="col-70"><div class="choice">'+formattype[i]+'.<font>'+field.choice_detail+'</font></div></div>\
-            <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="img/'+field.choice_img_name+'"></div></a></div>\
+            <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="'+field.choice_img_name+'"></div></a></div>\
          </div>\
         </li>\
         ';
@@ -514,6 +514,34 @@ num++;
             $$("#content_choice").append(content);
     break;
     case '3':
+    var content='\
+    <div class="testpage">\
+      <a id="choiceselected" set_id="'+set_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+      <div class="testpage_completed">\
+        <div class="testpage_completed-step">\
+    ';
+    content+='\
+    <span class="step_point" style="left: '+progess+'%"></span>\
+    <div class="step_line">\
+      <div style="width: '+progess+'%"></div>\
+    </div>\
+  </div>\
+  <span class="testpage_completed-text">Completed '+data.countanswer+'/'+data.examination_count+'</span>\
+  </div>\
+  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' '+data.number_examination+' Item ('+data.score+' Point)</span>\
+  <div class="testpage_basiccard">\
+    <div class="testpage_basiccard-inner">\
+      <div class="testpage_insertword">\
+        <span class="testpage_insertword-head">Fill Answers in the blank</span>\
+        <ul class="testpage_insertword-list">\
+  ';
+  $$.each(data, function(i, field){
+
+    if (field.examination_title) {
+
+
+    }
+      });//each
 
     break;
     case '4':
@@ -567,7 +595,7 @@ num++;
           <li class="select" choice_id="'+field.choice_id+'">\
             <div class="row no-gutter">\
               <div class="col-70"><div class="choice"><font>'+field.choice_detail+'</font></div></div>\
-              <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="img/'+field.choice_img_name+'"></div></a></div>\
+              <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="'+field.choice_img_name+'"></div></a></div>\
            </div>\
           </li>\
           ';
@@ -585,7 +613,7 @@ num++;
         <li class="select" choice_id="'+field.choice_id+'">\
           <div class="row no-gutter">\
             <div class="col-70"><div class="choice"><font>'+field.choice_detail+'</font></div></div>\
-            <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="img/'+field.choice_img_name+'"></div></a></div>\
+            <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="'+field.choice_img_name+'"></div></a></div>\
          </div>\
         </li>\
         ';

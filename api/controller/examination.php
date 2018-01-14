@@ -14,7 +14,7 @@ $model=new examinations();
 $result=$this->checkPath($param);
 $examination_type_id=$result[0]['examination_type_id'];
 $exam_path_id=$result[0]['exam_path_id'];
-if ($examination_type_id !=2) {
+if ($examination_type_id !=2 || $examination_type_id !=3) {
   $response=$model->getexamination($param);
   $examination_id=$response[0]['examination_id'];
   $exam_path_id=$response[0]['exam_path_id'];
@@ -61,7 +61,18 @@ $response['countanswer']=$countanswer+$countanswer_fill+$countanswer_path;
 
       break;
       case '3':
-        # code...
+      $param['pre_next']="path";
+      $param['exam_path_id']=$exam_path_id;
+      $param['examination_id']=0;
+      $response=$model->getexamination($param);
+      $number_row=count($response);
+      $response['row_frist']=$response[0]['row'];
+      $response['row_last']=$response[($number_row-1)]['row'];
+      $ojb_choice=new choice();
+      $response['score']=$ojb_choice->getscoreFill($exam_path_id);
+      var_dump($response[0]['examination_type_format_id']);
+      //$response['choice']=$ojb_choice->getchoice($examination_id);
+      $response['number_examination']=$model->getCountExaminationPath($exam_path_id);
         break;
         case '4':
         $ojb_choice=new choice();

@@ -58,7 +58,7 @@ if ($param['pre_next']==path) {
       ON b.set_id=c.set_id
       INNER JOIN examination d
       ON c.exam_path_id=d.exam_path_id
-       WHERE c.set_id='$set_id'    ORDER BY d.exam_path_id,examination_id ASC) as dataraw
+       WHERE c.set_id='$set_id' AND d.status='1'    ORDER BY d.exam_path_id,examination_id ASC) as dataraw
   	  ,(SELECT@r:=0)as a
     )
     as dataexamination
@@ -157,7 +157,7 @@ public function getCountExamination($param)
   $set_id=$param['set_id'];
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT count(*) as examination_count   FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id  INNER JOIN examination d ON c.exam_path_id=d.exam_path_id WHERE c.set_id='$set_id'      ORDER BY d.exam_path_id,examination_id ASC";
+  SELECT count(*) as examination_count   FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id  INNER JOIN examination d ON c.exam_path_id=d.exam_path_id WHERE c.set_id='$set_id' AND d.status='1'      ORDER BY d.exam_path_id,examination_id ASC";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)
      {
@@ -185,7 +185,7 @@ $strCondition2 = "SELECT *  FROM (
     ON b.set_id=c.set_id
     INNER JOIN examination d
     ON c.exam_path_id=d.exam_path_id
-     WHERE c.set_id='$set_id'    ORDER BY d.exam_path_id,examination_id ASC) as dataraw
+     WHERE c.set_id='$set_id' AND d.status='1'    ORDER BY d.exam_path_id,examination_id ASC) as dataraw
     ,(SELECT@r:=0)as a
   )
   as dataexamination
@@ -271,7 +271,7 @@ public function getCountExaminationPath($exam_path_id)
   LEFT JOIN exam_path b
   ON a.exam_path_id=b.exam_path_id
   WHERE
-  b.exam_path_id='$exam_path_id'
+  b.exam_path_id='$exam_path_id' AND a.status='1'
 ";
   $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)

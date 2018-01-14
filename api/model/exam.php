@@ -18,7 +18,7 @@ public function listexam($param)
   $time_stamp=strtotime("now")+(3600*7);
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT *   FROM `exams` a INNER JOIN `register_exam` b ON a.exam_id = b.exam_id WHERE sec_id IN ($sec_id) AND time_end_stamp >= '$time_stamp'";
+  SELECT *   FROM `exams` a INNER JOIN `register_exam` b ON a.exam_id = b.exam_id WHERE sec_id IN ($sec_id) AND time_end_stamp >= '$time_stamp' AND b.status='1' AND a.status='1'";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      //var_dump($strCondition2);
      if(!$objSelect2)

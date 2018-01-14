@@ -27,6 +27,13 @@ public function getscore($exam_path_id)
   return $response;
 }
 
+public function getscoreFill($exam_path_id)
+{
+  $model=new choices();
+  $response=$model->getscoreFill($exam_path_id);
+  return $response;
+}
+
 }
 
  ?>
