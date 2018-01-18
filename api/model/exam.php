@@ -9,12 +9,11 @@ public function listexam($param)
   foreach ($param as $key => $value) {
   $sec_id[]=$value['sec_id'];
   }
-
-
   if (sizeof($sec_id)>1) {
   $sec_id=implode(',',$sec_id);
-  }
-//var_dump($sec_id);
+}else {
+$sec_id=$value['sec_id'];
+}
   $time_stamp=strtotime("now")+(3600*7);
   $clsMyDB = new MyDatabase();
   $strCondition2 = "

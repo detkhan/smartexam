@@ -242,6 +242,7 @@ $$("#content_choice").html("");
   var progess=(parseInt(data.countanswer)/parseInt(data.examination_count))*100;
   var total=parseInt(data.examination_count)-parseInt(data.countanswer);
   var examination_type_id=data[0].examination_type_id;
+  var examination_id=data[0].examination_id;
   switch (examination_type_id) {
     case '0':
   console.log(data[0].exam_id);
@@ -261,7 +262,7 @@ $$("#content_choice").html("");
     formattype=ojb_Utility.examinationTypeFormat(examination_type_id,examination_type_format_id);
     var content='\
     <div class="testpage">\
-      <a id="choiceselected" set_id="'+set_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+      <a id="choiceselected" set_id="'+set_id+'" examination_id="'+examination_id+'" save="yes" examination_type_id="'+examination_type_id+'"  href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
       <div class="testpage_completed">\
         <div class="testpage_completed-step">\
     ';
@@ -1276,6 +1277,67 @@ ojb_examination.getExamination(set_id,examination_id_pre,'pre');
 });//click pre_path
 $$(document).on("click", "#choiceselected", function() {
 var set_id=$$(this).attr("set_id");
+var save=$$(this).attr("save");
+var  examination_type_id=$$(this).attr("examination_type_id");
+var examination_id=$$(this).attr("examination_id");
+if (save=="yes") {
+
+switch (examination_type_id) {
+  case '1':
+  var choice_id=parseInt($$(".select").attr("choice_id"));
+  console.log("choice_id="+choice_id);
+  if (!isNaN(choice_id)) {
+    var ojb_answer=new Answer();
+    ojb_answer.add_answer(choice_id,set_id,examination_id,examination_type_id);
+  }
+    break;
+  case '2':
+
+  break;
+  case '3':
+
+  break;
+  case '4':
+  var choice_id=parseInt($$(".select").attr("choice_id"));
+  var ojb_examination=new Examination();
+  ojb_examination.getExamination(set_id,examination_id,'next');
+  console.log("choice_id="+choice_id);
+  if (!isNaN(choice_id)) {
+    var ojb_answer=new Answer();
+    ojb_answer.add_answer(choice_id,set_id,examination_id,examination_type_id);
+  }
+  break;
+  case '5':
+  var wording=$$(".testpage_wording-textbox").val();
+  if (wording) {
+    var ojb_answer=new Answer();
+    ojb_answer.add_answer(wording,set_id,examination_id,examination_type_id);
+  }
+  var ojb_examination=new Examination();
+  ojb_examination.getExamination(set_id,examination_id,'next');
+  //console.log("choice_id="+choice_id);
+  /*
+  if (!isNaN(choice_id)) {
+    var ojb_answer=new Answer();
+    ojb_answer.add_answer(choice_id,set_id,examination_id);
+  }
+  */
+  break;
+
+}
+
+}else {
+  var examination_id_pre=$$(this).attr("examination_id");
+  var examination=$$(".examination");
+  var item=[];
+  $.each(examination,function(k,v){
+    var examination_id=$(this).attr('examination_id');
+    var val=$(this).val();
+    item[k]={examination_id:examination_id,choice_pair_id:val};
+  });
+    var ojb_answer=new Answer();
+    ojb_answer.add_answer_path(item,set_id);
+}
 var ojb_examination=new Examination();
 ojb_examination.getLayout(set_id);
 });//click choiceselected
