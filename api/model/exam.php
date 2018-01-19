@@ -247,6 +247,44 @@ public function getExamTime($param)
        return $response;
 }
 
+public function getSent_exam($param)
+{
+  $exam_id=$param['exam_id'];
+  $student_id=$param['student_id'];
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT *   FROM `sent_exam`  WHERE exam_id='$exam_id' and student_id = '$student_id'";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response[] =
+       [
+         'status' => "no",
+       ];
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response[] =
+         [
+           'status' => "yes",
+         ];
+       }
+     }
+       return $response;
+}
+
+public function addSent_exam($param)
+{
+  $exam_id=$param['exam_id'];
+  $student_id=$param['student_id'];
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+INSERT INTO  sent_exam (exam_id,student_id)
+VALUES ('$exam_id','$student_id')
+  ";
+     $objSelect2 = $clsMyDB->fncInsertRecord($strCondition2);
+}
+
 public function countExamination($exam_id)
 {
   $clsMyDB = new MyDatabase();

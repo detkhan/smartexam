@@ -100,13 +100,13 @@ formattype=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','1
         break;
     case '2':
     switch(examination_type_format_id) {
-      case '1':
+      case '4':
 formattype=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
           break;
-      case '2':
+      case '5':
 formattype=['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ','ฎ','ฏ','ฐ','ฑ','ฒ','ณ','ด','ต','ถ','ท','ธ','น','บ','ป','ผ','ฝ'];
           break;
-      case '3':
+      case '6':
 formattype=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26'];
   }
         break;
@@ -219,7 +219,7 @@ checkRegisterSet(array_data){
   </div>\
   <div class="text-right">\
   <a href="#" class="back_btn small back">BACK</a>\
-  <a id="startexam" href="#" class="next_btn small" register_exam_id="'+register_exam_id+'" set_id="'+set_id+'">NEXT</a>\
+  <a id="startexam" href="#" class="next_btn small" student_id="'+localStorage.student_id+'" exam_id="'+exam_id+'"  register_exam_id="'+register_exam_id+'" set_id="'+set_id+'">NEXT</a>\
   </div>\
   </div>\
   </div>\
@@ -910,7 +910,7 @@ complete(total,set_id){
         <div class="testpage_status-tag completed">\
           <i class="statusicons"><img src="img/icons/symbol-correct@3x.png"></i>\
           <span class="statustext">Successful</span>\
-          <a id="logout" href="" class="back_btn">SUBMIT</a>\
+          <a id="logout"  set_id="'+set_id+'" href="" class="back_btn">SUBMIT</a>\
         </div>\
       </div>\
     </div>\
@@ -956,12 +956,28 @@ ojb_time_exam.timeout();
   }, 1000);
 }//function starttime
 
-checkTimeExam(register_exam_id,set_id){
-  var param ={register_exam_id:register_exam_id};
+checkTimeExam(register_exam_id,set_id,exam_id,student_id){
+  var param ={register_exam_id:register_exam_id,exam_id:exam_id,student_id:student_id};
   var url = "http://"+hosturl+"/api/exam/getExamTime/";
   $$.getJSON( url,{parameter:param}
   ,function( data ) {
 $$.each(data, function(i, field){
+switch (field.status) {
+  case "false":
+myApp.alert("ยังไม่ถึงเวลาสอบ", 'SMART EXAM');
+    break;
+  case "success":
+  var ojb_time_exam=new TimeExam();
+  ojb_time_exam.starttime(field.time_start_stamp,field.time_end_stamp);
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,'0','normal');
+      break;
+  case "sent":
+myApp.alert("คุณส่งข้อสอบไปแล้ว", 'SMART EXAM');
+  break;
+
+}
+/*
 if (field.status=="false") {
 myApp.alert("ยังไม่ถึงเวลาสอบ", 'SMART EXAM');
 }else {
@@ -970,6 +986,7 @@ myApp.alert("ยังไม่ถึงเวลาสอบ", 'SMART EXAM');
 var ojb_examination=new Examination();
 ojb_examination.getExamination(set_id,'0','normal');
 }
+*/
 });//each
 });//getJson
 }//checkTimeExam
@@ -1126,8 +1143,10 @@ $$(document).on("click", "#examboard", function() {
 $$(document).on("click", "#startexam", function() {
 var register_exam_id=$$(this).attr("register_exam_id");
 var set_id=$$(this).attr("set_id");
+var exam_id=$$(this).attr("exam_id");
+var student_id=$$(this).attr("student_id");
 var ojb_time_exam=new TimeExam();
-ojb_time_exam.checkTimeExam(register_exam_id,set_id);
+ojb_time_exam.checkTimeExam(register_exam_id,set_id,exam_id,student_id);
 });//click login
 
 $$(document).on("click", "#next_btn", function() {
@@ -1351,9 +1370,8 @@ ojb_examination.getExamination(set_id,examination_id,'normal');
 
   $$(document).on("click", "#logout", function() {
     var set_id=$$(this).attr("set_id");
-    var examination_id=$$(this).attr("examination_id");
-    var ojb_user=new User();
-  ojb_user.logout();
+      var ojb_examination=new Examination();
+      ojb_examination.getLayout(set_id);
 });//click LOGOUT
 
 $$(document).on("click", "#get_logout", function() {
@@ -1376,8 +1394,13 @@ var ojb_user=new User();
 ojb_user.logout();
 });//click menu_logout
 $$(document).on("click", "#submit", function() {
-var ojb_user=new User();
-ojb_user.logout();
+
+  myApp.confirm("คุณแน่ใจว่าจะส่งข้อสอบ เพราะส่งแล้วจะกลับมาแก้ไขไม่ได้",'SMART EXAM',function () {
+    var ojb_user=new User();
+      ojb_user.logout();
+  },function () {
+
+  });
 });//click menu_logout
 
 $$(document).on("click", "#img_choice", function() {

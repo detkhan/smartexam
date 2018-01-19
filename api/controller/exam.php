@@ -70,7 +70,13 @@ public function addRegisterSet($param)
 public function getExamTime($param)
 {
   $model=new exams();
+$check_sent_exam=$model->getSent_exam($param);
+if ($check_sent_exam[0]['status']=="no") {
   $response=$model->getExamTime($param);
+}else {
+$response[0]['status']="sent";
+}
+
   $data= json_encode($response);
   echo $data;
 }

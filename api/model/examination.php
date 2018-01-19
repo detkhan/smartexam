@@ -58,12 +58,12 @@ if ($param['pre_next']==path) {
       ON b.set_id=c.set_id
       INNER JOIN examination d
       ON c.exam_path_id=d.exam_path_id
-       WHERE c.set_id='$set_id' AND d.status='1'    ORDER BY d.exam_path_id,examination_id ASC) as dataraw
+       WHERE c.set_id='$set_id' AND a.status='1'  AND b.status='1' AND c.status='1' AND d.status='1'   ORDER BY d.exam_path_id,examination_id ASC) as dataraw
   	  ,(SELECT@r:=0)as a
     )
     as dataexamination
     WHERE    $examination_id_sql ORDER BY row $asc";
-  //  var_dump($param);
+
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)
      {
@@ -111,7 +111,7 @@ public function getNumberExamination($set_id,$examination_id)
   $strCondition2 = "
   SELECT *  FROM (
   SELECT @r:=@r+1 'row' ,dataraw.* FROM
-  (SELECT a.exam_id,b.set_id,examination_id,d.exam_path_id FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id INNER JOIN examination d ON c.exam_path_id=d.exam_path_id WHERE c.set_id='$set_id' ORDER BY d.exam_path_id,examination_id ASC) as dataraw
+  (SELECT a.exam_id,b.set_id,examination_id,d.exam_path_id FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id INNER JOIN examination d ON c.exam_path_id=d.exam_path_id WHERE c.set_id='$set_id' AND a.status='1'  AND b.status='1' AND c.status='1' AND d.status='1' ORDER BY d.exam_path_id,examination_id ASC) as dataraw
   ,(SELECT@r:=0)as a
   )
   as dataexamination
@@ -129,13 +129,17 @@ $response=$value['row'];
 }
 
 
-public function getNumberExamPath($exam_path_id)
+public function getNumberExamPath($exam_path_id,$set_id)
 {
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
   SELECT *  FROM (
   SELECT @r:=@r+1 'row' ,dataraw.* FROM
-  (SELECT * FROM  exam_path   ORDER BY exam_path_id ASC) as dataraw
+  (SELECT exam_path_id FROM
+  exam_path a INNER JOIN `set` b
+  ON a.set_id=b.set_id
+  WHERE b.set_id='$set_id' AND a.status='1'
+  ORDER BY exam_path_id ASC) as dataraw
   ,(SELECT@r:=0)as a
   )
   as dataexam_path
