@@ -312,7 +312,10 @@ public function getStory($examination_id)
      }
      else{
        foreach ($objSelect2 as $value) {
-         $response=$value['story_detail'];
+$urlTeacher="http://teacher.smartexam.revoitmarketing.com";
+    $content=$value['story_detail'];
+    $content_result=$this->addUrl($content,$urlTeacher);
+         $response=$content_result;
        }
      }
        return $response;
@@ -340,7 +343,10 @@ public function getImage($examination_id)
      }
      else{
        foreach ($objSelect2 as $value) {
-         $response=$value['examination_img_name'];
+        $urlTeacher="http://teacher.smartexam.revoitmarketing.com";
+        $content=$value['examination_img_name'];
+        $content_result=$this->addUrl($content,$urlTeacher);
+        $response=$content_result;
        }
      }
        return $response;
@@ -348,6 +354,74 @@ public function getImage($examination_id)
 
 }//function getImage
 
+
+function addUrl($content,$urlTeacher){
+ $pattern = '/\/upload\/u[0-9]+\/t[0-9]+\/image_[0-9_]+.[a-z]{2,4}/';
+ preg_match_all($pattern, $content, $matches);
+ $img = $matches[0];
+ foreach ($img as $key => $value) {
+  $content = str_replace($value,$urlTeacher.$value , $content);
+ }
+ return $content;
+}
+
+
+public function getScoreFill($exam_path_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  SUM(score) as score_total
+  FROM
+  examination a
+  LEFT JOIN exam_path b
+  ON a.exam_path_id=b.exam_path_id
+  LEFT JOIN examination_fill c
+  ON a.examination_id=c.examination_id
+  WHERE
+  b.exam_path_id='$exam_path_id' AND a.status='1'
+  ";
+  $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response =0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['score_total'];
+       }
+     }
+       return $response;
+}
+
+
+public function getScorePath($exam_path_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  SUM(score) as score_total
+  FROM
+  examination a
+LEFT JOIN exam_path b
+ON a.exam_path_id=b.exam_path_id
+LEFT JOIN exam_path_score c
+ON a.examination_id=c.examination_id
+  WHERE
+  b.exam_path_id='$exam_path_id' AND a.status='1'
+  ";
+  $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response =0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['score_total'];
+       }
+     }
+       return $response;
+}
 //SELECT *,MAX(score)  FROM choice GROUP BY examination_id
 }
 ?>

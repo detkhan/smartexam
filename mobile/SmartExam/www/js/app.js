@@ -92,10 +92,10 @@ examinationTypeFormat(examination_type_id,examination_type_format_id){
 formattype=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
           break;
       case '2':
-formattype=['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ','ฎ','ฏ','ฐ','ฑ','ฒ','ณ','ด','ต','ถ','ท','ธ','น','บ','ป','ผ','ฝ'];
+formattype=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26'];
           break;
       case '3':
-formattype=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26'];
+formattype=['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ','ฎ','ฏ','ฐ','ฑ','ฒ','ณ','ด','ต','ถ','ท','ธ','น','บ','ป','ผ','ฝ'];
   }
         break;
     case '2':
@@ -104,10 +104,11 @@ formattype=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','1
 formattype=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
           break;
       case '5':
-formattype=['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ','ฎ','ฏ','ฐ','ฑ','ฒ','ณ','ด','ต','ถ','ท','ธ','น','บ','ป','ผ','ฝ'];
+formattype=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26'];
+
           break;
       case '6':
-formattype=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26'];
+formattype=['ก','ข','ค','ง','จ','ฉ','ช','ซ','ฌ','ญ','ฎ','ฏ','ฐ','ฑ','ฒ','ณ','ด','ต','ถ','ท','ธ','น','บ','ป','ผ','ฝ'];
   }
         break;
   }
@@ -294,13 +295,13 @@ if (data.story) {
   content+='\
   </span>\
   <div class="testpage_read">\
-    <a href="#" class="next_btn open-popup" data-popup=".popup-img">\
+    <a href="#" class="next_btn open-popup" data-popup=".popup-story">\
       <i class="f7-icons">search_strong</i>\
       READ STORY\
     </a>\
   </div>\
-  <!-- Images Popup -->\
-<div class="popup popup-img">\
+  <!-- story Popup -->\
+<div class="popup popup-story">\
   <div class="content-block">\
     <div class="imgpopup story">\
         <div class="imgpopup_inner">\
@@ -338,21 +339,19 @@ content+='\
 </div>\
 </div>\
 ';
-}else {
-  content+='\
-  <!-- Images Popup -->\
-  <div class="popup popup-img">\
-  <div class="content-block">\
-  <div class="imgpopup">\
-      <div class="imgpopup_inner">\
-        <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
-      </div>\
-      <img id="img_popup" src="" class="imgpopup_img">\
-    </div>\
-  </div>\
-  </div>\
-  ';
 }
+content+='\
+<div class="popup popup-choice">\
+  <div class="content-block">\
+    <div class="imgpopup">\
+        <div class="imgpopup_inner">\
+          <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
+        </div>\
+        <img id="img_choice_popup" src="" class="imgpopup_img">\
+      </div>\
+  </div>\
+</div>\
+';
     content+='\
   <div class="testpage_basiccard">\
     <div class="testpage_nav">\
@@ -386,7 +385,7 @@ content+='\
           <li class="select" choice_id="'+field.choice_id+'">\
             <div class="row no-gutter">\
               <div class="col-70"><div class="choice">'+formattype[i]+'.<font>'+field.choice_detail+'</font></div></div>\
-              <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img id="img_choice" src="'+field.choice_img_name+'"></div></a></div>\
+              <div class="col-30"><a href="#" data-popup=".popup-choice" class="open-popup"><div class="choice_img"><img id="img_choice" src="'+field.choice_img_name+'"></div></a></div>\
            </div>\
           </li>\
           ';
@@ -439,7 +438,7 @@ content+='\
   </div>\
   <span class="testpage_completed-text">Completed '+data.countanswer+'/'+data.examination_count+'</span>\
   </div>\
-  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' 50 Item (50 Point)</span>\
+  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' '+data.number_examination+' Item ('+data.score+' Point)</span>\
   <div class="testpage_couple">\
     <div class="row">\
       <div class="col-50">\
@@ -656,7 +655,7 @@ num++;
   </div>\
   <span class="testpage_completed-text">Completed '+data.countanswer+'/'+data.examination_count+'</span>\
   </div>\
-  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' 50 Item (50 Point)</span>\
+  <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' '+data.number_examination+' Item ('+data.score+' Point)</span>\
   <span class="testpage_subject">\
   </span>\
   '+data[0].row+'. '+data[0].examination_title+'\
@@ -1417,12 +1416,12 @@ var ojb_exam=new Exam();
 
   });
 }else {
-myApp.alert("คุณยังทำข้อสอบไม่ครบ !", 'SMART EXAM');  
+myApp.alert("คุณยังทำข้อสอบไม่ครบ !", 'SMART EXAM');
 }
 
 });//click menu_logout
 
 $$(document).on("click", "#img_choice", function() {
 var img=$$(this).attr("src");
-var img_popup=$$("#img_popup").attr("src",img);
+var img_popup=$$("#img_choice_popup").attr("src",img);
 });//click img_choice

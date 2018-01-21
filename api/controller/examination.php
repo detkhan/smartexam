@@ -58,6 +58,8 @@ $response['examination_count']=$model->getCountExamination($param);
 $countanswer=$ojb_answer->countAnswer($param);
 $countanswer_fill=$ojb_answer->countAnswerFill($param);
 $countanswer_path=$ojb_answer->countAnswerPath($param);
+$response['number_examination']=$model->getCountExaminationPath($exam_path_id);
+$response['score']=$model->getScorePath($exam_path_id);
 $response['countanswer']=$countanswer+$countanswer_fill+$countanswer_path;
 
       break;
@@ -84,6 +86,8 @@ $response['countanswer']=$countanswer+$countanswer_fill+$countanswer_path;
           break;
           case '5':
   $response['getanswer_fill']=$ojb_answer->getAnswerFill($param);
+  $response['score']=$model->getScoreFill($exam_path_id);
+  $response['number_examination']=$model->getCountExaminationPath($exam_path_id);
             break;
 }
 

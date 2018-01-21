@@ -24,12 +24,15 @@ public function getchoice($examination_id)
      }
      else{
        foreach ($objSelect2 as $value) {
+$urlTeacher="http://teacher.smartexam.revoitmarketing.com";
+$content=$value['choice_img_name'];
+$choice_img_name=$this->addUrl($content,$urlTeacher);
          $response[] =
          [
            'choice_id' => $value['choice_id'],
            'examination_id'=> $value['examination_id'],
            'choice_detail' => $value['choice_detail'],
-           'choice_img_name' => $value['choice_img_name'],
+           'choice_img_name' => $choice_img_name,
            'status' => "success",
          ];
        }
@@ -150,6 +153,16 @@ public function getscoreFill($exam_path_id)
 
 
 }//function getscoreFill
+
+function addUrl($content,$urlTeacher){
+ $pattern = '/\/upload\/u[0-9]+\/t[0-9]+\/image_[0-9_]+.[a-z]{2,4}/';
+ preg_match_all($pattern, $content, $matches);
+ $img = $matches[0];
+ foreach ($img as $key => $value) {
+  $content = str_replace($value,$urlTeacher.$value , $content);
+ }
+ return $content;
+}
 
 }
 ?>
