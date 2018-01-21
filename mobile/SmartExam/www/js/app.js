@@ -162,6 +162,7 @@ content+='\
   $$("#content_prpage").append(content);
   });//getJson
 }//GetListExam
+
 checkRegisterSet(array_data){
   var exam_id =array_data['exam_id'];
   var register_exam_id=array_data['register_exam_id'];
@@ -228,6 +229,15 @@ $$("#content_examboard").append(content);
   });//getJson
 
 }//checkRegisterSet
+
+sent_exam(exam_id){
+  var param ={student_id:localStorage.student_id,exam_id:exam_id};
+  var url = "http://"+hosturl+"/api/exam/addSentExam/";
+  $$.getJSON( url,{parameter:param}
+  ,function( data ) {
+
+});//getJson
+}//sent_exam
 }//class
 
 class Examination {
@@ -734,7 +744,7 @@ content+='\
 ';
 if (num==1) {
   content+='\
-    <a id="submit" href="" class="next_btn">\
+    <a id="submit" exam_id="'+field.exam_id+'" examination_count="'+data.examination_count+'"  countanswer="'+data.countanswer+'" href="" class="next_btn">\
       <i class="f7-icons">arrow_up</i>\
       Submit your exam\
     </a>\
@@ -1394,13 +1404,22 @@ var ojb_user=new User();
 ojb_user.logout();
 });//click menu_logout
 $$(document).on("click", "#submit", function() {
-
+var exam_id=$$(this).attr("exam_id");
+var countanswer=$$(this).attr("countanswer");
+var examination_count=$$(this).attr("examination_count");
+if (examination_count==countanswer) {
   myApp.confirm("คุณแน่ใจว่าจะส่งข้อสอบ เพราะส่งแล้วจะกลับมาแก้ไขไม่ได้",'SMART EXAM',function () {
+var ojb_exam=new Exam();
+    ojb_exam.sent_exam(exam_id);
     var ojb_user=new User();
       ojb_user.logout();
   },function () {
 
   });
+}else {
+myApp.alert("คุณยังทำข้อสอบไม่ครบ !", 'SMART EXAM');  
+}
+
 });//click menu_logout
 
 $$(document).on("click", "#img_choice", function() {

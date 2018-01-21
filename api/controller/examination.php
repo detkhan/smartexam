@@ -102,6 +102,12 @@ public function getLayout($param)
 {
   $model=new examinations();
   $response=$model->getLayout($param);
+  $response['examination_count']=$model->getCountExamination($param);
+  $ojb_answer=new answer();
+  $countanswer=$ojb_answer->countAnswer($param);
+  $countanswer_fill=$ojb_answer->countAnswerFill($param);
+  $countanswer_path=$ojb_answer->countAnswerPath($param);
+  $response['countanswer']=$countanswer+$countanswer_fill+$countanswer_path;
   $data= json_encode($response);
   echo $data;
 }

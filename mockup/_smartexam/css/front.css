@@ -33,8 +33,8 @@ ul li{list-style: none;}
 .page-content.popuppage{background-color: #4a4a4a;}
 
 .navmenu{position: relative;}
-.navmenu a{display: inline-block; height: 48.11px; width: 48.11px; text-align: right; position: relative;}
-.navmenu_bullet{height:16px; width: 4px; position: absolute; top: 0; bottom: 0; right: 0; margin: auto;}
+.navmenu a{display: inline-block; height: 48.11px; width: 48.11px; text-align: right; position: relative; right: -16px;}
+.navmenu_bullet{height:16px; width: 4px; position: absolute; top: 0; bottom: 0; right: 20px; margin: auto;}
 .navmenu_bullet > div{width: 4px; height: 4px; background: #FFF; margin: 2px 0;-webkit-border-radius: 10px; border-radius: 10px; display: block; line-height: 0; font-size: 1px;}
 .popover-nav .popover-angle{display: none;}
 .popover-nav{width: 296px !important; border-radius: 0 !important; background: #FFF; top: 24px !important; right: 40px !important; left: auto !important;}
@@ -155,7 +155,7 @@ border-style: solid; border-width: 0.5px; border-image-source: linear-gradient(t
 .yesno .testpage_basiccard-inner{height: 151px; padding: 0;}
 .yesno .testpage_subject{max-height: 360px;}
 
-.popup-img{background-color: rgba(74, 74, 74, 0.9);}
+.popup{background-color: rgba(74, 74, 74, 0.9);}
 
 .testpage_wording{padding: 25px 20px;}
 .testpage_wording-head{ font-size: 18px; font-weight: bold; line-height: 1.33; text-align: left; color: #f5a623; display: block;}
@@ -326,7 +326,7 @@ animation-delay: 1.5s;
   .testpage_completed-step .step_line > div{height: 1.5px;}
   .testpage_completed-text{font-size: 22.56px; margin-top: 7.52px;}
   .testpage_part{font-size: 17.29px; margin-top: 15.04px;}
-  .testpage_subject{font-size: 10.53px; margin-top: 15.04px; max-height: 56px; padding-right: 11.28px;}
+  .testpage_subject{font-size: 10.53px; margin-top: 15.04px; max-height: 82.71px; padding-right: 11.28px;}
   .testpage_overall{top: 32.33px; left: 43.61px;}
   .testpage_overall > img{width: 22.56px;}
   .testpage_basiccard{height: 330.83px; bottom: 30.08px; width: 332.33px;}

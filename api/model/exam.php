@@ -273,7 +273,7 @@ public function getSent_exam($param)
        return $response;
 }
 
-public function addSent_exam($param)
+public function addSentExam($param)
 {
   $exam_id=$param['exam_id'];
   $student_id=$param['student_id'];

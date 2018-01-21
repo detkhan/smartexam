@@ -81,6 +81,11 @@ $response[0]['status']="sent";
   echo $data;
 }
 
+public function addSentExam($param)
+{
+  $model=new exams();
+  $response=$model->addSentExam($param);
+}//  addSent_exam
 }
 
  ?>
