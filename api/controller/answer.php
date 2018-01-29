@@ -48,6 +48,26 @@ $response=$model->getAnswerPair($param);
 return $response;
 }
 
+public function getAnswerFillSelect($param)
+{
+$model=new answers();
+$response=$model->getAnswerFillSelect($param);
+return $response;
+}
+
+public function getAnswerFillFill($param)
+{
+$model=new answers();
+$response=$model->getAnswerFillFill($param);
+return $response;
+}
+
+public function checkAnswerFillSelect($param)
+{
+$model=new answers();
+$response=$model->checkAnswerFillSelect($param);
+return $response;
+}
 
 public function addAnswer($param)
 {
@@ -71,6 +91,22 @@ public function addAnswerPath($param)
 {
 $model=new answers();
 $response=$model->addAnswerPath($param);
+$data= json_encode($response);
+echo $data;
+}
+
+public function addAnswerPathFill($param)
+{
+$model=new answers();
+$response=$model->addAnswerPathFill($param);
+$data= json_encode($response);
+echo $data;
+}
+
+public function addAnswerPathFillFill($param)
+{
+$model=new answers();
+$response=$model->addAnswerPathFillFill($param);
 $data= json_encode($response);
 echo $data;
 }

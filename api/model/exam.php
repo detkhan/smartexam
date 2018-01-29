@@ -73,7 +73,7 @@ public function countSet($exam_id)
 {
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT  count(*) as countset   FROM `set` WHERE exam_id= '$exam_id'";
+  SELECT  count(*) as countset   FROM `set` WHERE exam_id= '$exam_id' and status='1'";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)
      {
@@ -96,7 +96,7 @@ public function getRegisterSet($param)
   $exam_id=$param['exam_id'];
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT *   FROM `set` a INNER JOIN `register_set` b ON a.set_id = b.set_id  WHERE exam_id='$exam_id' AND student_id='$student_id'";
+  SELECT *   FROM `set` a INNER JOIN `register_set` b ON a.set_id = b.set_id  WHERE exam_id='$exam_id' AND student_id='$student_id' AND a.status='1'";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)
      {
@@ -151,7 +151,7 @@ public function getPath($set_id)
   ON a.examination_type_id=b.examination_type_id
   INNER JOIN `examination` c
   ON a.exam_path_id=c.exam_path_id
-  WHERE set_id='$set_id'
+  WHERE set_id='$set_id' and a.status='1'
   GROUP BY a.exam_path_id   ORDER BY a.exam_path_id  ASC
 ";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
@@ -197,7 +197,7 @@ public function getPathNumber($set_id)
   ON a.examination_type_id=b.examination_type_id
   INNER JOIN `examination` c
   ON a.exam_path_id=c.exam_path_id
-  WHERE set_id='$set_id'
+  WHERE set_id='$set_id' and a.status='1'
   GROUP BY a.exam_path_id   ORDER BY a.exam_path_id  ASC
 ";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
@@ -297,7 +297,7 @@ public function countExamination($exam_id)
   ON b.set_id=c.set_id
   INNER JOIN examination d
   ON c.exam_path_id=d.exam_path_id
-  WHERE a.exam_id='$exam_id'    GROUP BY b.set_id ORDER BY b.set_id,examination_id ASC LIMIT 0,1
+  WHERE a.exam_id='$exam_id' and d.status='1'    GROUP BY b.set_id ORDER BY b.set_id,examination_id ASC LIMIT 0,1
   ";
        $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
        if(!$objSelect2)

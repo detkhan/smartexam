@@ -9,7 +9,7 @@ public function login($param)
   $student_code=$param['student_code'];
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT *   FROM `student` WHERE CONCAT(firstname,'.',lastname) = '$name_surname' AND student_code ='$student_code'";
+  SELECT *   FROM `student` WHERE CONCAT(firstname,'.',SUBSTRING(lastname,1,3)) = '$name_surname' AND student_code ='$student_code'";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2)
      {

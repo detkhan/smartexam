@@ -242,9 +242,9 @@ sent_exam(exam_id){
 }//class
 
 class Examination {
-getExamination(set_id,examination_id,pre_next){
+getExamination(set_id,examination_id,pre_next,row){
 $$("#content_choice").html("");
-  var param ={set_id:set_id,student_id:localStorage.student_id,examination_id:examination_id,pre_next:pre_next};
+  var param ={set_id:set_id,student_id:localStorage.student_id,examination_id:examination_id,pre_next:pre_next,row:row};
   var url = "http://"+hosturl+"/api/examination/getexamination/";
   var formattype;
   var content;
@@ -355,7 +355,7 @@ content+='\
     content+='\
   <div class="testpage_basiccard">\
     <div class="testpage_nav">\
-      <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
+      <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" row="'+data[0].row+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
         ';
   if (data[0].row==1) {
     content+='\
@@ -366,7 +366,7 @@ content+='\
       ';
   }else {
     content+='\
-        <a id="prv_btn" href="#" class="testpage_nav-btn prv" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-left@3x.png"></a>\
+        <a id="prv_btn" href="#" class="testpage_nav-btn prv" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" row="'+data[0].row+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-left@3x.png"></a>\
       </div>\
       <div class="testpage_basiccard-inner">\
         <ul class="testpage_choice">\
@@ -403,7 +403,7 @@ content+='\
         <li  choice_id="'+field.choice_id+'">\
           <div class="row no-gutter">\
             <div class="col-70"><div class="choice">'+formattype[i]+'.<font>'+field.choice_detail+'</font></div></div>\
-            <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="'+field.choice_img_name+'"></div></a></div>\
+            <div class="col-30"><a href="#" data-popup=".popup-choice" class="open-popup"><div class="choice_img"><img id="img_choice" src="'+field.choice_img_name+'"></div></a></div>\
          </div>\
         </li>\
         ';
@@ -426,7 +426,7 @@ content+='\
     formattype=ojb_Utility.examinationTypeFormat(examination_type_id,examination_type_format_id);
     var content='\
     <div class="testpage">\
-      <a id="choiceselected" set_id="'+set_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+      <a id="choiceselected" set_id="'+set_id+'" examination_id="" save="yes" examination_type_id="'+examination_type_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
       <div class="testpage_completed">\
         <div class="testpage_completed-step">\
     ';
@@ -460,7 +460,7 @@ content+='\
                $$.each(data.choice, function(i2, field2){
                  num=0;
                  $$.each(data.getanswer, function(i4, field4){
-                 if (field4.examination_id==field.examination_id &&field4.choice_pair_id==field2.choice_pair_id) {
+if (field4.examination_id==field.examination_id &&field4.choice_pair_id==field2.choice_pair_id) {
                 content+='\
                 <option  value="'+field2.choice_pair_id+'" selected>'+formattype[i2]+'</option>\
 ';
@@ -510,12 +510,12 @@ num++;
     <div class="row">\
       <div class="col-50">\
         <div class="text-left">\
-          <a id="pre_path"  href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_frist+'" class="back_btn back small">BACK PART</a>\
+          <a id="pre_path"  href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_frist+'" row="'+data[0].row_frist+'" class="back_btn back small">BACK PART</a>\
         </div>\
       </div>\
       <div class="col-50">\
         <div class="text-right">\
-          <a id="next_path" href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_last+'"  class="next_btn small">NEXT PART</a>\
+          <a id="next_path" href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_last+'" row="'+data[0].row_last+'"  class="next_btn small">NEXT PART</a>\
         </div>\
       </div>\
     </div>\
@@ -525,8 +525,8 @@ num++;
     break;
     case '3':
     var content='\
-    <div class="testpage">\
-      <a id="choiceselected" set_id="'+set_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+    <div class="testpage insertword">\
+      <a id="choiceselected" set_id="'+set_id+'" examination_type_format_id="'+data[0].examination_type_format_id+'" save="yes" examination_type_id="'+examination_type_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
       <div class="testpage_completed">\
         <div class="testpage_completed-step">\
     ';
@@ -548,16 +548,64 @@ num++;
   $$.each(data, function(i, field){
 
     if (field.examination_title) {
-
+content+='\
+<li><spanrow="'+field.row+'" >'+field.row+'. '+field.examination_title+'</span></li>\
+';
 
     }
       });//each
+  content+='\
+  </ul>\
+</div>\
+</div>\
+<div class="text-right">\
+';
+if (data.row_frist==1) {
+if (data[0].examination_type_format_id==7) {
+  content+='\
+  <a href="#" id="back_btn_fill" set_id="'+set_id+'" class="back_btn back small">BACK PART</a>\
+  ';
+}else {
+  content+='\
+  <a href="#" id="back_btn_fill_fill" set_id="'+set_id+'" class="back_btn back small">BACK PART</a>\
+  ';
+}
 
+}else{
+  if (data[0].examination_type_format_id==7) {
+    content+='\
+    <a id="back_btn_fill" href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_frist+'" row="'+data.row_frist+'"  class="back_btn back small">BACK PART</a>\
+    ';
+  }else {
+    content+='\
+    <a id="back_btn_fill_fill" href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_frist+'" row="'+data.row_frist+'"  class="back_btn back small">BACK PART</a>\
+    ';
+  }
+
+}
+  if (data[0].examination_type_format_id==7) {
+    content+='\
+    <a id="next_btn_fill" href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_last+'" row="'+data.row_last+'" class="next_btn small">NEXT PART</a>\
+      </div>\
+    </div>\
+    </div>\
+      ';
+  }else {
+    content+='\
+    <a id="next_btn_fill_fill" href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_last+'" row="'+data.row_last+'" class="next_btn small">NEXT PART</a>\
+      </div>\
+    </div>\
+    </div>\
+      ';
+  }
+
+
+$$("#content_choice").append(content);
     break;
     case '4':
     var content='\
     <div class="testpage yesno">\
-      <a id="choiceselected" set_id="'+set_id+'"  href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+      <a id="choiceselected" set_id="'+set_id+'" examination_id="'+examination_id+'" save="yes" examination_type_id="'+examination_type_id+'"  href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
       <div class="testpage_completed">\
         <div class="testpage_completed-step">\
     ';
@@ -571,11 +619,72 @@ num++;
   </div>\
   <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' '+data.number_examination+' Item ('+data.score+' Point)</span>\
   <span class="testpage_subject">\
-  </span>\
   '+data[0].row+'. '+data[0].examination_title+'\
+  </span>\
+  ';
+  if (data.story) {
+    content+='\
+    <div class="testpage_read">\
+      <a href="#" class="next_btn open-popup" data-popup=".popup-story">\
+        <i class="f7-icons">search_strong</i>\
+        READ STORY\
+      </a>\
+    </div>\
+    <!-- story Popup -->\
+  <div class="popup popup-story">\
+    <div class="content-block">\
+      <div class="imgpopup story">\
+          <div class="imgpopup_inner">\
+            <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
+                    <div class="imgpopup_story">\
+                         <span class="imgpopup_story-head">Reading & Answer</span>\
+                         <span class="imgpopup_story-text">\
+  '+data.story+'\
+                         </span>\
+                    </div>\
+          </div>\
+        </div>\
+    </div>\
+  </div>\
+  ';
+  }
+  if (data.image) {
+  content+='\
+  <div class="testpage_read">\
+    <a href="#" class="next_btn open-popup" data-popup=".popup-img">\
+      <i class="f7-icons">search_strong</i>\
+      READ MORE.\
+    </a>\
+  </div>\
+  <!-- Images Popup -->\
+  <div class="popup popup-img">\
+  <div class="content-block">\
+  <div class="imgpopup">\
+      <div class="imgpopup_inner">\
+        <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
+      </div>\
+      <img id="img_popup" src="'+data.image+'" class="imgpopup_img">\
+    </div>\
+  </div>\
+  </div>\
+  ';
+  }
+  content+='\
+  <div class="popup popup-choice">\
+    <div class="content-block">\
+      <div class="imgpopup">\
+          <div class="imgpopup_inner">\
+            <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
+          </div>\
+          <img id="img_choice_popup" src="" class="imgpopup_img">\
+        </div>\
+    </div>\
+  </div>\
+  ';
+  content+='\
   <div class="testpage_basiccard">\
     <div class="testpage_nav">\
-      <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
+      <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" row="'+data[0].row+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
         ';
   if (data[0].row==1) {
     content+='\
@@ -586,7 +695,7 @@ num++;
       ';
   }else {
     content+='\
-        <a id="prv_btn" href="#" class="testpage_nav-btn prv" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-left@3x.png"></a>\
+        <a id="prv_btn" href="#" class="testpage_nav-btn prv" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" row="'+data[0].row+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-left@3x.png"></a>\
       </div>\
       <div class="testpage_basiccard-inner">\
         <ul class="testpage_choice">\
@@ -605,7 +714,7 @@ num++;
           <li class="select" choice_id="'+field.choice_id+'">\
             <div class="row no-gutter">\
               <div class="col-70"><div class="choice"><font>'+field.choice_detail+'</font></div></div>\
-              <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="'+field.choice_img_name+'"></div></a></div>\
+              <div class="col-30"><a href="#" data-popup=".popup-choice" class="open-popup"><div class="choice_img"><img id="img_choice" src="'+field.choice_img_name+'"></div></a></div>\
            </div>\
           </li>\
           ';
@@ -623,7 +732,7 @@ num++;
         <li class="select" choice_id="'+field.choice_id+'">\
           <div class="row no-gutter">\
             <div class="col-70"><div class="choice"><font>'+field.choice_detail+'</font></div></div>\
-            <div class="col-30"><a href="#" data-popup=".popup-img" class="open-popup"><div class="choice_img"><img src="'+field.choice_img_name+'"></div></a></div>\
+            <div class="col-30"><a href="#" data-popup=".popup-choice" class="open-popup"><div class="choice_img"><img id="img_choice" src="'+field.choice_img_name+'"></div></a></div>\
          </div>\
         </li>\
         ';
@@ -643,7 +752,7 @@ num++;
     case '5':
     var content='\
     <div class="testpage">\
-      <a id="choiceselected" set_id="'+set_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
+      <a id="choiceselected" set_id="'+set_id+'" examination_id="'+examination_id+'" save="yes" examination_type_id="'+examination_type_id+'" href="" class="testpage_overall"><img src="img/btn/overall@2x.png"></a>\
       <div class="testpage_completed">\
         <div class="testpage_completed-step">\
     ';
@@ -657,11 +766,60 @@ num++;
   </div>\
   <span class="testpage_part">Part '+data.row_exam_path+' '+data[0].exam_path_name+' '+data.number_examination+' Item ('+data.score+' Point)</span>\
   <span class="testpage_subject">\
-  </span>\
   '+data[0].row+'. '+data[0].examination_title+'\
+  </span>\
+  ';
+  if (data.story) {
+    content+='\
+    <div class="testpage_read">\
+      <a href="#" class="next_btn open-popup" data-popup=".popup-story">\
+        <i class="f7-icons">search_strong</i>\
+        READ STORY\
+      </a>\
+    </div>\
+    <!-- story Popup -->\
+  <div class="popup popup-story">\
+    <div class="content-block">\
+      <div class="imgpopup story">\
+          <div class="imgpopup_inner">\
+            <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
+                    <div class="imgpopup_story">\
+                         <span class="imgpopup_story-head">Reading & Answer</span>\
+                         <span class="imgpopup_story-text">\
+  '+data.story+'\
+                         </span>\
+                    </div>\
+          </div>\
+        </div>\
+    </div>\
+  </div>\
+  ';
+  }
+  if (data.image) {
+  content+='\
+  <div class="testpage_read">\
+    <a href="#" class="next_btn open-popup" data-popup=".popup-img">\
+      <i class="f7-icons">search_strong</i>\
+      READ MORE.\
+    </a>\
+  </div>\
+  <!-- Images Popup -->\
+  <div class="popup popup-img">\
+  <div class="content-block">\
+  <div class="imgpopup">\
+      <div class="imgpopup_inner">\
+        <a href="#" class="imgpopup_inner-close close-popup"><img src="img/btn/close@3x.png"></a>\
+      </div>\
+      <img id="img_popup" src="'+data.image+'" class="imgpopup_img">\
+    </div>\
+  </div>\
+  </div>\
+  ';
+  }
+  content+='\
   <div class="testpage_basiccard">\
     <div class="testpage_nav">\
-      <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
+      <a id="next_btn" href="#" class="testpage_nav-btn next" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" row="'+data[0].row+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-right@3x.png"></a>\
         ';
   if (data[0].row==1) {
     content+='\
@@ -672,7 +830,7 @@ num++;
       ';
   }else {
     content+='\
-        <a id="prv_btn" href="#" class="testpage_nav-btn prv" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-left@3x.png"></a>\
+        <a id="prv_btn" href="#" class="testpage_nav-btn prv" set_id="'+set_id+'" examination_id="'+data[0].examination_id+'" row="'+data[0].row+'" examination_type_id="'+data[0].examination_type_id+'"><img src="img/btn/arrow-left@3x.png"></a>\
       </div>\
       <div class="testpage_basiccard-inner">\
         <ul class="testpage_choice">\
@@ -764,48 +922,56 @@ switch (field.examination_type_id) {
   case '1':
   if (field.getanswer>0) {
     content+='\
-    <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+    <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
     ';
   }else {
     content+='\
-    <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+    <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
     ';
   }
     break;
     case '2':
     if (field.getanswer[0].status=="success") {
       content+='\
-      <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+      <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
       ';
     }else {
       content+='\
-      <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+      <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
       ';
     }
       break;
       case '3':
-
+      if (field.getanswer=="success") {
+        content+='\
+        <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
+        ';
+      }else {
+        content+='\
+        <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
+        ';
+      }
         break;
         case '4':
         if (field.getanswer>0) {
           content+='\
-          <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+          <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
           ';
         }else {
           content+='\
-          <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+          <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
           ';
         }
           break;
           case '5':
           if (field.getanswer!=0) {
             content+='\
-            <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+            <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
             ';
           }else {
 
             content+='\
-            <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+            <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
             ';
           }
             break;
@@ -821,47 +987,55 @@ if (field.exam_path_name) {
     case '1':
     if (field.getanswer>0) {
       content+='\
-      <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+      <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
       ';
     }else {
       content+='\
-      <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+      <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
       ';
     }
       break;
       case '2':
       if (field.getanswer[0].status=="success") {
         content+='\
-        <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+        <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
         ';
       }else {
         content+='\
-        <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+        <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
         ';
       }
         break;
         case '3':
-
+        if (field.getanswer=="success") {
+          content+='\
+          <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
+          ';
+        }else {
+          content+='\
+          <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
+          ';
+        }
           break;
           case '4':
           if (field.getanswer>0) {
             content+='\
-            <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+            <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
             ';
           }else {
             content+='\
-            <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+            <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
             ';
           }
             break;
             case '5':
             if (field.getanswer!=0) {
               content+='\
-              <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+              <a id="examination" href="" class="choice select" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
               ';
             }else {
               content+='\
-              <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'">'+field.row+'</a>\
+              <a id="examination" href="" class="choice" examination_id="'+field.examination_id+'"  set_id="'+field.set_id+'"row="'+field.row+'" >'+field.row+'</a>\
               ';
             }
               break;
@@ -978,8 +1152,9 @@ myApp.alert("ยังไม่ถึงเวลาสอบ", 'SMART EXAM');
   case "success":
   var ojb_time_exam=new TimeExam();
   ojb_time_exam.starttime(field.time_start_stamp,field.time_end_stamp);
+  var row=0;
 var ojb_examination=new Examination();
-ojb_examination.getExamination(set_id,'0','normal');
+ojb_examination.getExamination(set_id,'0','normal',row);
       break;
   case "sent":
 myApp.alert("คุณส่งข้อสอบไปแล้ว", 'SMART EXAM');
@@ -1079,6 +1254,31 @@ class Answer {
     });//each
     });//getJson
   }
+
+  add_answer_path_fill(item,set_id){
+    console.log(set_id);
+    var param ={item:item,student_id:localStorage.student_id,set_id:set_id};
+    var url = "http://"+hosturl+"/api/answer/addAnswerPathFill/";
+    $$.getJSON( url,{parameter:param}
+    ,function( data ) {
+    $$.each(data, function(i, field){
+      console.log(field.status);
+    });//each
+    });//getJson
+  }
+
+  add_answer_path_fill_fill(item,set_id){
+    console.log(set_id);
+    var param ={item:item,student_id:localStorage.student_id,set_id:set_id};
+    var url = "http://"+hosturl+"/api/answer/addAnswerPathFillFill/";
+    $$.getJSON( url,{parameter:param}
+    ,function( data ) {
+    $$.each(data, function(i, field){
+      console.log(field.status);
+    });//each
+    });//getJson
+  }
+
 }//class Answer
 
 
@@ -1091,10 +1291,12 @@ function startapp() {
 //  localStorage.removeItem("student_id");
 //  localStorage.removeItem("student_code");
 //  localStorage.removeItem("fullname");
+if (localStorage.student_id) {
+  var ojb_exam=new Exam();
+  ojb_exam.GetListExam();
+  mainView.router.load({pageName: 'prpage',ignoreCache:true});
+}
 
-var ojb_exam=new Exam();
-ojb_exam.GetListExam();
-mainView.router.load({pageName: 'prpage',ignoreCache:true});
 
 
 }
@@ -1162,12 +1364,10 @@ $$(document).on("click", "#next_btn", function() {
 var  examination_type_id=$$(this).attr("examination_type_id");
 var set_id=$$(this).attr("set_id");
 var examination_id=$$(this).attr("examination_id");
-
+var row=$$(this).attr("row");
 switch (examination_type_id) {
   case '1':
   var choice_id=parseInt($$(".select").attr("choice_id"));
-  var ojb_examination=new Examination();
-  ojb_examination.getExamination(set_id,examination_id,'next');
   console.log("choice_id="+choice_id);
   if (!isNaN(choice_id)) {
     var ojb_answer=new Answer();
@@ -1182,8 +1382,6 @@ switch (examination_type_id) {
   break;
   case '4':
   var choice_id=parseInt($$(".select").attr("choice_id"));
-  var ojb_examination=new Examination();
-  ojb_examination.getExamination(set_id,examination_id,'next');
   console.log("choice_id="+choice_id);
   if (!isNaN(choice_id)) {
     var ojb_answer=new Answer();
@@ -1196,8 +1394,7 @@ switch (examination_type_id) {
     var ojb_answer=new Answer();
     ojb_answer.add_answer(wording,set_id,examination_id,examination_type_id);
   }
-  var ojb_examination=new Examination();
-  ojb_examination.getExamination(set_id,examination_id,'next');
+
   //console.log("choice_id="+choice_id);
   /*
   if (!isNaN(choice_id)) {
@@ -1208,7 +1405,8 @@ switch (examination_type_id) {
   break;
 
 }
-
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,examination_id,'next',row);
 //getExamination(set_id,examination_id,pre_next)
 });//click next_btn
 
@@ -1216,12 +1414,11 @@ $$(document).on("click", "#prv_btn", function() {
 var  examination_type_id=$$(this).attr("examination_type_id");
   var set_id=$$(this).attr("set_id");
   var examination_id=$$(this).attr("examination_id");
-
+var row=$$(this).attr("row");
   switch (examination_type_id) {
     case '1':
     var choice_id=parseInt($$(".select").attr("choice_id"));
     var ojb_examination=new Examination();
-    ojb_examination.getExamination(set_id,examination_id,'pre');
     console.log("choice_id="+choice_id);
     if (!isNaN(choice_id)) {
       var ojb_answer=new Answer();
@@ -1237,7 +1434,6 @@ var  examination_type_id=$$(this).attr("examination_type_id");
     case '4':
     var choice_id=parseInt($$(".select").attr("choice_id"));
     var ojb_examination=new Examination();
-    ojb_examination.getExamination(set_id,examination_id,'pre');
     console.log("choice_id="+choice_id);
     if (!isNaN(choice_id)) {
       var ojb_answer=new Answer();
@@ -1250,8 +1446,7 @@ var  examination_type_id=$$(this).attr("examination_type_id");
       var ojb_answer=new Answer();
       ojb_answer.add_answer(wording,set_id,examination_id,examination_type_id);
     }
-    var ojb_examination=new Examination();
-    ojb_examination.getExamination(set_id,examination_id,'pre');
+
     /*
     if (!isNaN(choice_id)) {
       var ojb_answer=new Answer();
@@ -1261,15 +1456,101 @@ var  examination_type_id=$$(this).attr("examination_type_id");
     break;
 
   }
+  var ojb_examination=new Examination();
+  ojb_examination.getExamination(set_id,examination_id,'pre',row);
 
 
 
 });//click next_btn
 
+$$(document).on("click", "#next_btn_fill", function() {
+var set_id=$$(this).attr("set_id");
+var choice_fill=$$(".choice_fill");
+var examination_id_next=$$(this).attr("examination_id");
+var row=$$(this).attr("row");
+var item=[];
+$.each(choice_fill,function(k,v){
+  var examination_id=$(this).attr('examination_id');
+  var number_fill=$(this).attr('number_fill');
+  var val=$(this).val();
+  item[k]={examination_id:examination_id,number_fill:number_fill,choice_fill_id:val};
+	//item[$(this).attr('examination_id')] = $(v).val();
+});
+console.log(item);
+var ojb_answer=new Answer();
+ojb_answer.add_answer_path_fill(item,set_id);
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,examination_id_next,'next',row);
+});//click next_btn_fill
+
+$$(document).on("click", "#back_btn_fill", function() {
+var set_id=$$(this).attr("set_id");
+var choice_fill=$$(".choice_fill");
+var examination_id_next=$$(this).attr("examination_id");
+var row=$$(this).attr("row");
+var item=[];
+$.each(choice_fill,function(k,v){
+  var examination_id=$(this).attr('examination_id');
+  var number_fill=$(this).attr('number_fill');
+  var val=$(this).val();
+  item[k]={examination_id:examination_id,number_fill:number_fill,choice_fill_id:val};
+	//item[$(this).attr('examination_id')] = $(v).val();
+});
+console.log(item);
+var ojb_answer=new Answer();
+ojb_answer.add_answer_path_fill(item,set_id);
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,examination_id_next,'pre',row);
+});//click next_btn_fill
+
+$$(document).on("click", "#next_btn_fill_fill", function() {
+var set_id=$$(this).attr("set_id");
+var choice_fill=$$(".choice_fill_fill");
+var examination_id_next=$$(this).attr("examination_id");
+var row=$$(this).attr("row");
+var item=[];
+$.each(choice_fill,function(k,v){
+  var examination_id=$(this).attr('examination_id');
+  var number_fill=$(this).attr('number_fill');
+  var val=$(this).val();
+  item[k]={examination_id:examination_id,number_fill:number_fill,detail:val};
+	//item[$(this).attr('examination_id')] = $(v).val();
+});
+console.log(item);
+var ojb_answer=new Answer();
+ojb_answer.add_answer_path_fill_fill(item,set_id);
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,examination_id_next,'next',row);
+});//click next_btn_fill_fill
+
+$$(document).on("click", "#back_btn_fill_fill", function() {
+var set_id=$$(this).attr("set_id");
+var choice_fill=$$(".choice_fill_fill");
+var examination_id_next=$$(this).attr("examination_id");
+var row=$$(this).attr("row");
+var item=[];
+$.each(choice_fill,function(k,v){
+  var examination_id=$(this).attr('examination_id');
+  var number_fill=$(this).attr('number_fill');
+  var val=$(this).val();
+  item[k]={examination_id:examination_id,number_fill:number_fill,detail:val};
+	//item[$(this).attr('examination_id')] = $(v).val();
+});
+console.log(item);
+var ojb_answer=new Answer();
+ojb_answer.add_answer_path_fill_fill(item,set_id);
+var ojb_examination=new Examination();
+ojb_examination.getExamination(set_id,examination_id_next,'pre',row);
+});//click back_btn_fill_fill
+
+//back_btn_fill
+
+
 $$(document).on("click", "#next_path", function() {
 var set_id=$$(this).attr("set_id");
 var examination=$$(".examination");
 var examination_id_next=$$(this).attr("examination_id");
+var row=$$(this).attr("row");
 var item=[];
 $.each(examination,function(k,v){
   var examination_id=$(this).attr('examination_id');
@@ -1280,7 +1561,7 @@ $.each(examination,function(k,v){
   var ojb_answer=new Answer();
   ojb_answer.add_answer_path(item,set_id);
 var ojb_examination=new Examination();
-ojb_examination.getExamination(set_id,examination_id_next,'next');
+ojb_examination.getExamination(set_id,examination_id_next,'next',row);
 
 
 });//click next_path
@@ -1288,6 +1569,7 @@ ojb_examination.getExamination(set_id,examination_id_next,'next');
 $$(document).on("click", "#pre_path", function() {
 var set_id=$$(this).attr("set_id");
 var examination_id_pre=$$(this).attr("examination_id");
+var row=$$(this).attr("row");
 var examination=$$(".examination");
 var item=[];
 $.each(examination,function(k,v){
@@ -1299,7 +1581,7 @@ $.each(examination,function(k,v){
   var ojb_answer=new Answer();
   ojb_answer.add_answer_path(item,set_id);
 var ojb_examination=new Examination();
-ojb_examination.getExamination(set_id,examination_id_pre,'pre');
+ojb_examination.getExamination(set_id,examination_id_pre,'pre',row);
 
 
 });//click pre_path
@@ -1308,6 +1590,7 @@ var set_id=$$(this).attr("set_id");
 var save=$$(this).attr("save");
 var  examination_type_id=$$(this).attr("examination_type_id");
 var examination_id=$$(this).attr("examination_id");
+var  examination_type_format_id=$$(this).attr("examination_type_format_id");
 if (save=="yes") {
 
 switch (examination_type_id) {
@@ -1320,15 +1603,48 @@ switch (examination_type_id) {
   }
     break;
   case '2':
-
+  var examination=$$(".examination");
+  var item=[];
+  $.each(examination,function(k,v){
+    var examination_id=$(this).attr('examination_id');
+    var val=$(this).val();
+    item[k]={examination_id:examination_id,choice_pair_id:val};
+  });
+    var ojb_answer=new Answer();
+    ojb_answer.add_answer_path(item,set_id);
   break;
   case '3':
+  if (examination_type_format_id==7) {
+    var choice_fill=$$(".choice_fill");
+    var item=[];
+    $.each(choice_fill,function(k,v){
+      var examination_id=$(this).attr('examination_id');
+      var number_fill=$(this).attr('number_fill');
+      var val=$(this).val();
+      item[k]={examination_id:examination_id,number_fill:number_fill,choice_fill_id:val};
+    	//item[$(this).attr('examination_id')] = $(v).val();
+    });
+    console.log(item);
+    var ojb_answer=new Answer();
+    ojb_answer.add_answer_path_fill(item,set_id);
+  }else {
+    var choice_fill=$$(".choice_fill_fill");
+    var item=[];
+    $.each(choice_fill,function(k,v){
+      var examination_id=$(this).attr('examination_id');
+      var number_fill=$(this).attr('number_fill');
+      var val=$(this).val();
+      item[k]={examination_id:examination_id,number_fill:number_fill,detail:val};
+    	//item[$(this).attr('examination_id')] = $(v).val();
+    });
+    console.log(item);
+    var ojb_answer=new Answer();
+    ojb_answer.add_answer_path_fill_fill(item,set_id);
+  }
 
   break;
   case '4':
   var choice_id=parseInt($$(".select").attr("choice_id"));
-  var ojb_examination=new Examination();
-  ojb_examination.getExamination(set_id,examination_id,'next');
   console.log("choice_id="+choice_id);
   if (!isNaN(choice_id)) {
     var ojb_answer=new Answer();
@@ -1341,15 +1657,7 @@ switch (examination_type_id) {
     var ojb_answer=new Answer();
     ojb_answer.add_answer(wording,set_id,examination_id,examination_type_id);
   }
-  var ojb_examination=new Examination();
-  ojb_examination.getExamination(set_id,examination_id,'next');
-  //console.log("choice_id="+choice_id);
-  /*
-  if (!isNaN(choice_id)) {
-    var ojb_answer=new Answer();
-    ojb_answer.add_answer(choice_id,set_id,examination_id);
-  }
-  */
+
   break;
 
 }
@@ -1373,8 +1681,9 @@ ojb_examination.getLayout(set_id);
 $$(document).on("click", "#examination", function() {
   var set_id=$$(this).attr("set_id");
   var examination_id=$$(this).attr("examination_id");
+  var row=$$(this).attr("row");
   var ojb_examination=new Examination();
-ojb_examination.getExamination(set_id,examination_id,'normal');
+ojb_examination.getExamination(set_id,examination_id,'normal',row);
   });//click examination
 
   $$(document).on("click", "#logout", function() {

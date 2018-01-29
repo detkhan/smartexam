@@ -7,12 +7,14 @@ public function getexamination($param)
 {
 $set_id=$param['set_id'];
 $examination_id=$param['examination_id'];
-
+$row=$param['row'];
+$field="row";
   switch ($param['pre_next']) {
     case 'normal':
     $calculate="=";
     $asc="ASC  LIMIT 0,1";
     $path="";
+    //$field="examination_id";
       break;
       case 'next':
     $calculate=">";
@@ -33,11 +35,12 @@ $examination_id=$param['examination_id'];
   }
   if ($examination_id==0) {
 $calculate=">";
+$field="examination_id";
   }
 if ($param['pre_next']==path) {
   $examination_id_sql="$path";
 }else {
-  $examination_id_sql=" examination_id $calculate '$examination_id' $path";
+  $examination_id_sql=" $field $calculate '$row' $path";
 }
 
 
@@ -218,6 +221,7 @@ $strCondition2 = "SELECT *  FROM (
        $examination_type_id=$value['examination_type_id'];
        $examination_id=$value['examination_id'];
        $exam_path_id=$value['exam_path_id'];
+       $examination_type_format_id=$value['examination_type_format_id'];
        $ojb_answer=new answer();
        switch ($examination_type_id) {
          case '1':
@@ -230,6 +234,27 @@ $strCondition2 = "SELECT *  FROM (
            $getanswer=$ojb_answer->getAnswerPair($param);
              break;
              case '3':
+             $param['examination_id']=$examination_id;
+             $param['exam_path_id']=$exam_path_id;
+             if ($examination_type_format_id==7) {
+            $getanswer1=$ojb_answer->getAnswerFillSelect($param);
+            $number_fillall=$ojb_answer->checkAnswerFillSelect($param);
+            $totalfill=count($getanswer1);
+            if ($totalfill==$number_fillall) {
+            $getanswer="success";
+            }else {
+            $getanswer="false";
+            }
+          }else {
+            $getanswer1=$ojb_answer->getAnswerFillFill($param);
+            $number_fillall=$ojb_answer->checkAnswerFillSelect($param);
+            $totalfill=count($getanswer1);
+            if ($totalfill==$number_fillall) {
+            $getanswer="success";
+            }else {
+            $getanswer="false";
+            }
+          }
 
                break;
                case '4':
@@ -422,6 +447,90 @@ ON a.examination_id=c.examination_id
      }
        return $response;
 }
+
+public function countFillSelect($param)
+{
+  $set_id=$param['set_id'];
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT d.examination_id,c.exam_path_id,c.examination_type_format_id,e.number_fill
+  FROM exams a
+  INNER JOIN `set` b
+  ON a.exam_id=b.exam_id
+  INNER JOIN exam_path c
+  ON b.set_id=c.set_id
+  INNER JOIN examination d
+  ON d.exam_path_id=c.exam_path_id
+  INNER JOIN examination_number_fill e
+  ON e.examination_id=d.examination_id
+  WHERE b.set_id='$set_id' AND b.status='1'
+  ORDER BY d.examination_id ASC
+  ";
+
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response[] =
+       [
+         'examination_id'=> 0,
+         'exam_path_id'=> 0,
+         'number_fill'=> 0,
+         'examination_type_format_id'=> 0,
+         'status' => "false",
+       ];
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response[] =
+         [
+           'examination_id'=> $value['examination_id'],
+           'examination_type_format_id'=> $value['examination_type_format_id'],
+           'exam_path_id'=> $value['exam_path_id'],
+           'number_fill'=> $value['number_fill'],
+           'status' => "success",
+         ];
+       }
+     }
+       return $response;
+
+}
+
+
+public function getscoreFillFill($exam_path_id)
+{
+  $set_id=$param['set_id'];
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT sum(score) as score_total
+  FROM exams a
+  INNER JOIN `set` b
+  ON a.exam_id=b.exam_id
+  INNER JOIN exam_path c
+  ON b.set_id=c.set_id
+  INNER JOIN examination d
+  ON d.exam_path_id=c.exam_path_id
+  INNER JOIN examination_fill e
+  ON e.examination_id=d.examination_id
+  WHERE c.exam_path_id='$exam_path_id'
+  ORDER BY d.examination_id ASC
+  ";
+
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+$response=0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+$response=$value['score_total'];
+       }
+     }
+       return $response;
+
+}
+
+
+
 //SELECT *,MAX(score)  FROM choice GROUP BY examination_id
 }
 ?>

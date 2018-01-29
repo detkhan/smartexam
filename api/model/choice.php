@@ -43,6 +43,44 @@ $choice_img_name=$this->addUrl($content,$urlTeacher);
 }//function getchoice
 
 
+public function getchoiceFill($examination_id)
+{
+
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT  choice_fill_id ,examination_id,choice_detail,number_fill   FROM choice_fill   WHERE examination_id='$examination_id'  ORDER BY choice_fill_id ASC";
+  $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+
+     if(!$objSelect2)
+     {
+       $response[] =
+       [
+         'choice_fill_id' => '0',
+         'examination_id' => '0',
+         'choice_detail' => '0',
+         'number_fill' => '0',
+         'status' => "false",
+       ];
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response[] =
+         [
+           'choice_fill_id' => $value['choice_fill_id'],
+           'examination_id'=> $value['examination_id'],
+           'choice_detail' => $value['choice_detail'],
+           'number_fill' => $value['number_fill'],
+           'status' => "success",
+         ];
+       }
+     }
+       return $response;
+
+
+}//function getchoice
+
+
+
 public function getchoicePair($exam_path_id)
 {
 

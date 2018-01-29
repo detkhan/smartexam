@@ -19,6 +19,12 @@ public function getchoicePair($exam_path_id)
   $response=$model->getchoicePair($exam_path_id);
   return $response;
 }
+public function getchoiceFill($examination_id)
+{
+$model=new choices();
+$response=$model->getchoiceFill($examination_id);
+return $response;
+}
 
 public function getscore($exam_path_id)
 {
