@@ -131,7 +131,7 @@ $response['countanswer']=$countanswer+$countanswer_fill+$countanswer_path;
           break;
           case '5':
   $response['story']=$model->getStory($examination_id);
-  $response['image']=$model->getImage($examination_id);        
+  $response['image']=$model->getImage($examination_id);
   $response['getanswer_fill']=$ojb_answer->getAnswerFill($param);
   $response['score']=$model->getScoreFill($exam_path_id);
   $response['number_examination']=$model->getCountExaminationPath($exam_path_id);
@@ -266,6 +266,51 @@ foreach ($getFillSelect as $key => $value) {
 return $countanswer_fill_select;
 }
 
+
+public function getExamPath($set_id)
+{
+  $model=new examinations();
+  $result=$model->getExamPath($set_id);
+return $result;
+}
+
+
+public function getExaminationAnswer($exam_path_id,$examination_type_id,$examination_type_format_id,$student_id)
+{
+  $model=new examinations();
+  switch ($examination_type_id) {
+    case '1':
+      echo "test";
+      SELECT *  FROM
+exam_path a
+INNER JOIN
+examination b
+ON a.exam_path_id=b.exam_path_id
+INNER JOIN
+choice c
+ON b.examination_id=c.examination_id
+INNER JOIN
+answer d
+ON c.choice_id=d.choice_id
+WHERE  a.exam_path_id='1' AND student_id='2'   ORDER BY b.examination_id ASC
+      break;
+
+    case '2':
+        # code...
+      break;
+    case '3':
+        # code...
+      break;
+    case '4':
+        # code...
+      break;
+    case '5':
+        # code...
+      break;
+  }
+  //$result=$model->getExaminationAnswer($exam_path_id,$student_id);
+//return $result;
+}
 }
 
 

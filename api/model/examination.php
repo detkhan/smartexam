@@ -159,6 +159,8 @@ $response=$value['row'];
      return $response;
 }
 
+
+
 public function getCountExamination($param)
 {
   $set_id=$param['set_id'];
@@ -529,6 +531,87 @@ $response=$value['score_total'];
 
 }
 
+
+public function getExamPath($set_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT *  FROM (
+  SELECT @r:=@r+1 'row' ,dataraw.* FROM
+  (SELECT exam_path_id,examination_type_id,examination_type_format_id FROM
+  exam_path a INNER JOIN `set` b
+  ON a.set_id=b.set_id
+  WHERE b.set_id='$set_id' AND a.status='1'
+  ORDER BY exam_path_id ASC) as dataraw
+  ,(SELECT@r:=0)as a
+  )
+  as dataexam_path
+  ";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2){
+       $response[] =
+       [
+         'row' => '0',
+         'exam_path_id'=>'0',
+         'examination_type_id' => '0',
+         'examination_type_format_id' => '0',
+         'status' => "false",
+       ];
+     }else {
+foreach ($objSelect2 as $value) {
+  $response[] =
+  [
+    'row' =>$value['row'],
+    'exam_path_id'=>$value['exam_path_id'],
+    'examination_type_id' => $value['examination_type_id'],
+    'examination_type_format_id' =>$value['examination_type_format_id'],
+    'status' => "success",
+  ];
+}
+     }
+     return $response;
+}
+
+
+public function getExaminationAnswer($exam_path_id,$student_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT *  FROM (
+  SELECT @r:=@r+1 'row' ,dataraw.* FROM
+  (SELECT exam_path_id,examination_type_id,examination_type_format_id FROM
+  exam_path a INNER JOIN `set` b
+  ON a.set_id=b.set_id
+  WHERE b.set_id='$set_id' AND a.status='1'
+  ORDER BY exam_path_id ASC) as dataraw
+  ,(SELECT@r:=0)as a
+  )
+  as dataexam_path
+  ";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2){
+       $response[] =
+       [
+         'row' => '0',
+         'exam_path_id'=>'0',
+         'examination_type_id' => '0',
+         'examination_type_format_id' => '0',
+         'status' => "false",
+       ];
+     }else {
+foreach ($objSelect2 as $value) {
+  $response[] =
+  [
+    'row' =>$value['row'],
+    'exam_path_id'=>$value['exam_path_id'],
+    'examination_type_id' => $value['examination_type_id'],
+    'examination_type_format_id' =>$value['examination_type_format_id'],
+    'status' => "success",
+  ];
+}
+     }
+     return $response;
+}
 
 
 //SELECT *,MAX(score)  FROM choice GROUP BY examination_id
