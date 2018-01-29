@@ -510,12 +510,12 @@ num++;
     <div class="row">\
       <div class="col-50">\
         <div class="text-left">\
-          <a id="pre_path"  href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_frist+'" row="'+data[0].row_frist+'" class="back_btn back small">BACK PART</a>\
+          <a id="pre_path"  href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_frist+'" row="'+data.row_frist+'" class="back_btn back small">BACK PART</a>\
         </div>\
       </div>\
       <div class="col-50">\
         <div class="text-right">\
-          <a id="next_path" href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_last+'" row="'+data[0].row_last+'"  class="next_btn small">NEXT PART</a>\
+          <a id="next_path" href="javascript:;" set_id="'+set_id+'" examination_id="'+data.row_last+'" row="'+data.row_last+'"  class="next_btn small">NEXT PART</a>\
         </div>\
       </div>\
     </div>\

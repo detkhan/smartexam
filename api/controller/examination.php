@@ -126,8 +126,12 @@ $response['countanswer']=$countanswer+$countanswer_fill+$countanswer_path;
         $response['score']=$ojb_choice->getscore($exam_path_id);
         $response['number_examination']=$model->getCountExaminationPath($exam_path_id);
         $response['getanswer']=$ojb_answer->getAnswer($param);
+        $response['story']=$model->getStory($examination_id);
+        $response['image']=$model->getImage($examination_id);
           break;
           case '5':
+  $response['story']=$model->getStory($examination_id);
+  $response['image']=$model->getImage($examination_id);        
   $response['getanswer_fill']=$ojb_answer->getAnswerFill($param);
   $response['score']=$model->getScoreFill($exam_path_id);
   $response['number_examination']=$model->getCountExaminationPath($exam_path_id);
