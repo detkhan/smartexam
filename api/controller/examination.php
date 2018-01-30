@@ -286,7 +286,11 @@ $result=$model->getExaminationAnswerChoice($exam_path_id,$student_id);
 $result=$model->getExaminationAnswerPair($exam_path_id,$student_id);
       break;
     case '3':
-        # code...
+if ($examination_type_format_id==7) {
+$result=$model->getExaminationAnswerFillSelect($exam_path_id,$student_id);
+}else {
+$result=$model->getExaminationAnswerFillFill($exam_path_id,$student_id);
+}
       break;
     case '4':
 $result=$model->getExaminationAnswerChoice($exam_path_id,$student_id);

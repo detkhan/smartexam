@@ -721,6 +721,113 @@ $score=round(($answer_number_keyword/$total_keyword)*$scoreraw);
 return $score;
 }
 
+
+public function getExaminationAnswerFillSelect($exam_path_id,$student_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  SUM( score ) AS score
+  FROM
+  exam_path a
+  INNER JOIN
+  examination b
+  ON a.exam_path_id = b.exam_path_id
+  INNER JOIN
+  answer_fill_select c
+  ON b.examination_id = c.examination_id
+  INNER JOIN
+  choice_fill d
+  ON d.choice_fill_id = c.choice_fill_id
+  WHERE  a.exam_path_id='$exam_path_id' AND student_id='$student_id'   ORDER BY b.examination_id ASC
+  ";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2){
+       $response ='0';
+     }else {
+foreach ($objSelect2 as $value) {
+  $response=$value['score'];
+}
+     }
+     return $response;
+}
+
+
+
+public function getExaminationAnswerFillFill($exam_path_id,$student_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  b.examination_id,
+  number_exam,
+  keyword,
+  score
+  FROM
+  exam_path a
+  INNER JOIN
+  examination b
+  ON a.exam_path_id=b.exam_path_id
+  INNER JOIN
+  examination_fill c
+  ON b.examination_id=c.examination_id
+  WHERE  a.exam_path_id='$exam_path_id'
+  ORDER BY b.examination_id ASC
+  ";
+
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2){
+       $response ='0';
+     }else {
+foreach ($objSelect2 as $value) {
+  $answer_number_keyword=0;
+  $examination_id=$value['examination_id'];
+  $keyword=$value['keyword'];
+  $scoreraw=$value['score'];
+  $number_exam=$value['number_exam'];
+  $keyword_string=explode(',',$keyword);
+  $total_keyword=count($keyword_string);
+  for ($i=0; $i < $total_keyword; $i++) {
+    $keyword_answer=$keyword_string[$i];
+  $answer_number_keyword+=$this->checkKeywordFill($examination_id,$number_exam,$keyword_answer,$student_id);
+
+  }
+  $score+=$this->calculateScore($total_keyword,$scoreraw,$answer_number_keyword);
+}
+     }
+     return $score;
+}
+
+public function checkKeywordFill($examination_id,$number_exam,$keyword_answer,$student_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  count(*) as number_fill
+  FROM
+  answer_fill_fill
+  WHERE
+  examination_id='$examination_id'
+  AND
+  number_exam='$number_exam'
+  AND
+  student_id='$student_id'
+  AND
+  detail LIKE '%$keyword_answer%'
+  ";
+
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2){
+       $response ='0';
+     }else {
+foreach ($objSelect2 as $value) {
+  $response =$value['number_fill'];
+
+}
+     }
+     return $response;
+}
+
 //SELECT *,MAX(score)  FROM choice GROUP BY examination_id
 }
 ?>
