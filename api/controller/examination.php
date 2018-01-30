@@ -280,36 +280,22 @@ public function getExaminationAnswer($exam_path_id,$examination_type_id,$examina
   $model=new examinations();
   switch ($examination_type_id) {
     case '1':
-      echo "test";
-      SELECT *  FROM
-exam_path a
-INNER JOIN
-examination b
-ON a.exam_path_id=b.exam_path_id
-INNER JOIN
-choice c
-ON b.examination_id=c.examination_id
-INNER JOIN
-answer d
-ON c.choice_id=d.choice_id
-WHERE  a.exam_path_id='1' AND student_id='2'   ORDER BY b.examination_id ASC
+$result=$model->getExaminationAnswerChoice($exam_path_id,$student_id);
       break;
-
     case '2':
-        # code...
+$result=$model->getExaminationAnswerPair($exam_path_id,$student_id);
       break;
     case '3':
         # code...
       break;
     case '4':
-        # code...
+$result=$model->getExaminationAnswerChoice($exam_path_id,$student_id);
       break;
     case '5':
-        # code...
+$result=$model->getExaminationAnswerFill($exam_path_id,$student_id);
       break;
   }
-  //$result=$model->getExaminationAnswer($exam_path_id,$student_id);
-//return $result;
+return $result;
 }
 }
 

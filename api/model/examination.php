@@ -573,46 +573,153 @@ foreach ($objSelect2 as $value) {
 }
 
 
-public function getExaminationAnswer($exam_path_id,$student_id)
+public function getExaminationAnswerChoice($exam_path_id,$student_id)
 {
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT *  FROM (
-  SELECT @r:=@r+1 'row' ,dataraw.* FROM
-  (SELECT exam_path_id,examination_type_id,examination_type_format_id FROM
-  exam_path a INNER JOIN `set` b
-  ON a.set_id=b.set_id
-  WHERE b.set_id='$set_id' AND a.status='1'
-  ORDER BY exam_path_id ASC) as dataraw
-  ,(SELECT@r:=0)as a
-  )
-  as dataexam_path
+  SELECT SUM(score) as score  FROM
+exam_path a
+INNER JOIN
+examination b
+ON a.exam_path_id=b.exam_path_id
+INNER JOIN
+choice c
+ON b.examination_id=c.examination_id
+INNER JOIN
+answer d
+ON c.choice_id=d.choice_id
+WHERE  a.exam_path_id='$exam_path_id' AND student_id='$student_id'   ORDER BY b.examination_id ASC
   ";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2){
-       $response[] =
-       [
-         'row' => '0',
-         'exam_path_id'=>'0',
-         'examination_type_id' => '0',
-         'examination_type_format_id' => '0',
-         'status' => "false",
-       ];
+       $response ='0';
      }else {
 foreach ($objSelect2 as $value) {
-  $response[] =
-  [
-    'row' =>$value['row'],
-    'exam_path_id'=>$value['exam_path_id'],
-    'examination_type_id' => $value['examination_type_id'],
-    'examination_type_format_id' =>$value['examination_type_format_id'],
-    'status' => "success",
-  ];
+  $response=$value['score'];
 }
      }
      return $response;
 }
 
+
+
+public function getExaminationAnswerPair($exam_path_id,$student_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+SUM((
+SELECT
+SUM(score)
+FROM
+exam_path_score
+WHERE
+exam_path_score.examination_id=dataraw.examination_id
+AND
+exam_path_score.choice_pair_id=dataraw.choice_pair_id
+)) as score
+FROM
+(
+SELECT
+c.examination_id,
+c.choice_pair_id
+FROM
+exam_path a
+INNER JOIN
+examination b
+ON a.exam_path_id=b.exam_path_id
+INNER JOIN
+answer_pair c
+ON b.examination_id=c.examination_id
+WHERE  a.exam_path_id='$exam_path_id' AND student_id='$student_id'
+ORDER BY b.examination_id ASC
+) dataraw
+  ";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2){
+       $response ='0';
+     }else {
+foreach ($objSelect2 as $value) {
+  $response=$value['score'];
+}
+     }
+     return $response;
+}
+
+
+public function getExaminationAnswerFill($exam_path_id,$student_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  b.examination_id,
+  keyword,
+  score
+  FROM
+  exam_path a
+  INNER JOIN
+  examination b
+  ON a.exam_path_id=b.exam_path_id
+  INNER JOIN
+  examination_fill c
+  ON b.examination_id=c.examination_id
+  WHERE  a.exam_path_id='$exam_path_id'
+  ORDER BY b.examination_id ASC
+  ";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2){
+       $response ='0';
+     }else {
+foreach ($objSelect2 as $value) {
+  $answer_number_keyword=0;
+  $examination_id=$value['examination_id'];
+  $keyword=$value['keyword'];
+  $scoreraw=$value['score'];
+  $keyword_string=explode(',',$keyword);
+  $total_keyword=count($keyword_string);
+  for ($i=0; $i < $total_keyword; $i++) {
+    $keyword_answer=$keyword_string[$i];
+  $answer_number_keyword+=$this->checkKeyword($examination_id,$keyword_answer,$student_id);
+
+  }
+  $score+=$this->calculateScore($total_keyword,$scoreraw,$answer_number_keyword);
+}
+     }
+     return $score;
+}
+
+public function checkKeyword($examination_id,$keyword_answer,$student_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  count(*) as number_fill
+  FROM
+  answer_fill
+  WHERE
+  examination_id='$examination_id'
+  AND
+  student_id='$student_id'
+  AND
+  detail LIKE '%$keyword_answer%'
+  ";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2){
+       $response ='0';
+     }else {
+foreach ($objSelect2 as $value) {
+  $response =$value['number_fill'];
+
+}
+     }
+     return $response;
+}
+
+public function calculateScore($total_keyword,$scoreraw,$answer_number_keyword)
+{
+$score=round(($answer_number_keyword/$total_keyword)*$scoreraw);
+return $score;
+}
 
 //SELECT *,MAX(score)  FROM choice GROUP BY examination_id
 }
