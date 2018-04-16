@@ -86,6 +86,17 @@ public function addSentExam($param)
   $model=new exams();
   $response=$model->addSentExam($param);
 }//  addSent_exam
+
+
+public function getPrdetail($param)
+{
+  $model=new exams();
+  $response=$model->getPrdetail($param);
+  $data= json_encode($response);
+  echo $data;
+}//getPrdetail
+
+
 }
 
  ?>

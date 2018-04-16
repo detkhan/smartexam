@@ -1018,6 +1018,11 @@ public function checkScore($exam_path_id,$score,$student_id)
 
 }//function getAnswer
 
+
+
+
+
+
 //SELECT *,MAX(score)  FROM choice GROUP BY examination_id
 }
 ?>

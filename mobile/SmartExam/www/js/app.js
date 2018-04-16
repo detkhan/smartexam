@@ -239,6 +239,18 @@ sent_exam(exam_id){
 
 });//getJson
 }//sent_exam
+
+get_prdetail(param){
+  console.log(param);
+
+  var url = "http://"+hosturl+"/api/exam/getPrdetail/";
+  $$.getJSON( url,{parameter:param}
+  ,function( data ) {
+
+});//getJson
+
+}//get_prdetail
+
 }//class
 
 class Examination {
@@ -1102,6 +1114,7 @@ complete(total,set_id){
     $$("#content_choice").append(content);
 }//complete
 
+
 }//class Examination
 
 class TimeExam {
@@ -1319,6 +1332,10 @@ var datethainame=$$(this).attr("datethainame");
 var short_detail=$$(this).attr("short_detail");
 var time_total=$$(this).attr("time_total");
 var register_exam_id=$$(this).attr("register_exam_id");
+var param={exam_id:exam_id,subject:subject,detail:detail,time_start:time_start,time_end:time_end,datethainame:datethainame,short_detail:short_detail,time_total:time_total,register_exam_id:register_exam_id};
+var ojb_exam=new Exam();
+ojb_exam.get_prdetail(param);
+
 $$("#content_prdetail").html('');
 var content='\
 <div class="prpage deatil">\

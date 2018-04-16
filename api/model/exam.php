@@ -312,6 +312,44 @@ public function countExamination($exam_id)
          return $response;
 }
 
+
+public function getPrdetail($param)
+{
+  $exam_id=$param['exam_id'];
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT b.set_id,set_name,exam_path_name,examination_type_id,examination_title
+  FROM exams a
+  INNER JOIN `set` b
+  ON a.exam_id=b.exam_id
+  INNER JOIN exam_path c
+  ON b.set_id=c.set_id
+  INNER JOIN examination d
+  ON c.exam_path_id=d.exam_path_id
+  WHERE a.exam_id='$exam_id' and d.status='1'    ORDER BY b.set_id,examination_id ASC
+  ";
+       $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+       if(!$objSelect2)
+       {
+  $response=0;
+       }
+       else{
+         foreach ($objSelect2 as $value) {
+           $response[] =
+           [
+             'set_id' => $value['set_id'],
+             'set_name' => $value['set_name'],
+             'exam_path_name' => $value['exam_path_name'],
+             'examination_title' => $value['examination_title'],
+             'examination_type_id' => $value['examination_type_id'],
+             'status' => "success",
+           ];
+         }
+       }
+         return $response;
+
+}//  function getPrdetail
+
 //SELECT *   FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id  INNER JOIN examination d ON c.exam_path_id=d.exam_path_id WHERE examination_id<'1'  ORDER BY d.exam_path_id,examination_id ASC LIMIT 0,1
 
 }
