@@ -281,6 +281,8 @@ public function getExaminationAnswer($exam_path_id,$examination_type_id,$examina
   switch ($examination_type_id) {
     case '1':
 $result=$model->getExaminationAnswerChoice($exam_path_id,$student_id);
+$result+=$model->getExaminationAnswerChoiceContinue($exam_path_id,$student_id);
+  $model->addScore($exam_path_id,$result,$student_id);
       break;
     case '2':
 $result=$model->getExaminationAnswerPair($exam_path_id,$student_id);

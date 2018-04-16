@@ -149,7 +149,7 @@ content+='\
         '+field.short_detail+'\
         <br><br>\
       ระยะเวลาทำข้อสอบ '+field.time_total+' นาที<br>\
-      ข้อสอบ '+field.countset+' ชุด จำนวน '+field.countexamination+' ข้อ\
+      ข้อสอบ '+field.countset+' ชุด\
       </span>\
     </div>\
 </div>\
@@ -1195,6 +1195,10 @@ timeout(){
       $$("#content_choice").append(content);
 $$('#name_surname').val("");
 $$('#student_code').val("");
+localStorage.removeItem("student_id");
+localStorage.removeItem("student_code");
+localStorage.removeItem("fullname");
+mainView.router.load({pageName: 'login',ignoreCache:true});
 }//timeout
 }//class  TimeExam
 

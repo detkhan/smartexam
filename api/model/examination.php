@@ -577,7 +577,10 @@ public function getExaminationAnswerChoice($exam_path_id,$student_id)
 {
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT SUM(score) as score  FROM
+  SELECT
+  b.examination_id,
+  score
+  FROM
 exam_path a
 INNER JOIN
 examination b
@@ -588,19 +591,87 @@ ON b.examination_id=c.examination_id
 INNER JOIN
 answer d
 ON c.choice_id=d.choice_id
-WHERE  a.exam_path_id='$exam_path_id' AND student_id='$student_id'   ORDER BY b.examination_id ASC
+WHERE  a.exam_path_id='$exam_path_id' AND student_id='$student_id' AND b.examination_type_sub_id ='1'   ORDER BY b.examination_id ASC
   ";
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2){
        $response ='0';
      }else {
 foreach ($objSelect2 as $value) {
-  $response=$value['score'];
+  $examination_id=$value['examination_id'];
+  $score=$value['score'];
+  $number_fill=1;
+  $response+=$value['score'];
+  $this->addScoreRaw($examination_id,$score,$student_id,$number_fill);
 }
      }
+
      return $response;
 }
 
+
+public function getExaminationAnswerChoiceContinue($exam_path_id,$student_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT
+  b.examination_id,
+d.choice_id,
+e.choice_before,
+(
+SELECT
+count(*) as yeschoice
+FROM
+answer
+WHERE
+choice_id=e.choice_before
+AND
+student_id='$student_id'
+) as choice,
+  score
+  FROM
+exam_path a
+INNER JOIN
+examination b
+ON a.exam_path_id=b.exam_path_id
+INNER JOIN
+choice c
+ON b.examination_id=c.examination_id
+INNER JOIN
+answer d
+ON c.choice_id=d.choice_id
+INNER JOIN
+choice_continue e
+ON d.choice_id=e.choice_id
+WHERE
+a.exam_path_id='$exam_path_id'
+AND
+student_id='$student_id'
+AND
+b.examination_type_sub_id ='2'
+ORDER BY b.examination_id ASC
+  ";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2){
+       $response ='0';
+     }else {
+foreach ($objSelect2 as $value) {
+
+  $examination_id=$value['examination_id'];
+  $choice=$value['choice'];
+  $number_fill=1;
+  if ($choice==1) {
+  $score=$value['score'];
+}else {
+  $score=0;
+}
+  $response+=$score;
+  $this->addScoreRaw($examination_id,$score,$student_id,$number_fill);
+}
+     }
+
+     return $response;
+}
 
 
 public function getExaminationAnswerPair($exam_path_id,$student_id)
@@ -608,40 +679,50 @@ public function getExaminationAnswerPair($exam_path_id,$student_id)
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
   SELECT
-SUM((
-SELECT
-SUM(score)
-FROM
-exam_path_score
-WHERE
-exam_path_score.examination_id=dataraw.examination_id
-AND
-exam_path_score.choice_pair_id=dataraw.choice_pair_id
-)) as score
-FROM
-(
-SELECT
-c.examination_id,
-c.choice_pair_id
-FROM
-exam_path a
-INNER JOIN
-examination b
-ON a.exam_path_id=b.exam_path_id
-INNER JOIN
-answer_pair c
-ON b.examination_id=c.examination_id
-WHERE  a.exam_path_id='$exam_path_id' AND student_id='$student_id'
-ORDER BY b.examination_id ASC
-) dataraw
+  examination_id,
+  IFNULL(score,0) as score
+  FROM
+  (SELECT
+  *,
+  		(
+  			SELECT
+  				score
+  			FROM
+  				exam_path_score
+  			WHERE
+  				exam_path_score.examination_id = dataraw.examination_id
+  			AND exam_path_score.choice_pair_id = dataraw.choice_pair_id
+  		) as score
+  FROM
+  	(
+  		SELECT
+  			c.examination_id ,
+  			c.choice_pair_id
+  		FROM
+  			exam_path a
+  		INNER JOIN examination b ON a.exam_path_id = b.exam_path_id
+  		INNER JOIN answer_pair c ON b.examination_id = c.examination_id
+  		WHERE
+  			a.exam_path_id = '$exam_path_id'
+  		AND student_id = '$student_id'
+  		ORDER BY
+  			b.examination_id ASC
+  	) dataraw
+  ) as data
   ";
+
      $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
      if(!$objSelect2){
        $response ='0';
      }else {
 foreach ($objSelect2 as $value) {
-  $response=$value['score'];
+  $examination_id=$value['examination_id'];
+  $score=$value['score'];
+  $number_fill=1;
+  $response+=$value['score'];
+  $this->addScoreRaw($examination_id,$score,$student_id,$number_fill);
 }
+$this->addScore($exam_path_id,$response,$student_id);
      }
      return $response;
 }
@@ -670,6 +751,7 @@ public function getExaminationAnswerFill($exam_path_id,$student_id)
      if(!$objSelect2){
        $response ='0';
      }else {
+$scoretotal=0;
 foreach ($objSelect2 as $value) {
   $answer_number_keyword=0;
   $examination_id=$value['examination_id'];
@@ -682,10 +764,14 @@ foreach ($objSelect2 as $value) {
   $answer_number_keyword+=$this->checkKeyword($examination_id,$keyword_answer,$student_id);
 
   }
-  $score+=$this->calculateScore($total_keyword,$scoreraw,$answer_number_keyword);
+  $number_fill=1;
+  $score=$this->calculateScore($total_keyword,$scoreraw,$answer_number_keyword);
+  $this->addScoreRaw($examination_id,$score,$student_id,$number_fill);
+  $scoretotal+=$score;
 }
+$this->addScore($exam_path_id,$scoretotal,$student_id);
      }
-     return $score;
+     return $scoretotal;
 }
 
 public function checkKeyword($examination_id,$keyword_answer,$student_id)
@@ -727,7 +813,9 @@ public function getExaminationAnswerFillSelect($exam_path_id,$student_id)
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
   SELECT
-  SUM( score ) AS score
+  b.examination,
+  score,
+  number_fill
   FROM
   exam_path a
   INNER JOIN
@@ -746,8 +834,13 @@ public function getExaminationAnswerFillSelect($exam_path_id,$student_id)
        $response ='0';
      }else {
 foreach ($objSelect2 as $value) {
-  $response=$value['score'];
+  $examination_id=$value['examination_id'];
+  $score=$value['score'];
+  $number_fill=$value['number_fill'];
+  $response+=$value['score'];
+  $this->addScoreRaw($examination_id,$score,$student_id,$number_fill);
 }
+$this->addScore($exam_path_id,$response,$student_id);
      }
      return $response;
 }
@@ -779,6 +872,7 @@ public function getExaminationAnswerFillFill($exam_path_id,$student_id)
      if(!$objSelect2){
        $response ='0';
      }else {
+$scoretotal=0;
 foreach ($objSelect2 as $value) {
   $answer_number_keyword=0;
   $examination_id=$value['examination_id'];
@@ -792,10 +886,14 @@ foreach ($objSelect2 as $value) {
   $answer_number_keyword+=$this->checkKeywordFill($examination_id,$number_exam,$keyword_answer,$student_id);
 
   }
-  $score+=$this->calculateScore($total_keyword,$scoreraw,$answer_number_keyword);
+  $score=$this->calculateScore($total_keyword,$scoreraw,$answer_number_keyword);
+  $scoretotal+=$score;
+  $this->addScoreRaw($examination_id,$score,$student_id,$number_exam);
+
 }
+$this->addScore($exam_path_id,$scoretotal,$student_id);
      }
-     return $score;
+     return $scoretotal;
 }
 
 public function checkKeywordFill($examination_id,$number_exam,$keyword_answer,$student_id)
@@ -827,6 +925,98 @@ foreach ($objSelect2 as $value) {
      }
      return $response;
 }
+
+
+public function addScoreRaw($examination_id,$score,$student_id,$number_fill)
+{
+$checkdata=$this->checkScoreRaw($examination_id,$score,$student_id,$number_fill);
+  $clsMyDB = new MyDatabase();
+  if ($checkdata==0) {
+    $strinsert ="INSERT INTO  score_raw (examination_id,student_id,number_fill,score) VALUES ('$examination_id','$student_id','$number_fill','$score')";
+    $objInsert = $clsMyDB->fncInsertRecord($strinsert);
+    $response[] =
+    [
+      'status' => "add",
+    ];
+  }
+
+return $response;
+}//function addAnswer
+
+
+
+public function checkScoreRaw($examination_id,$score,$student_id,$number_fill)
+{
+    $clsMyDB = new MyDatabase();
+    $strCondition2 = "
+    SELECT *
+    FROM score_raw
+    WHERE
+    examination_id='$examination_id'
+    AND
+    student_id='$student_id'
+    AND
+    number_fill='$number_fill'
+  ";
+       $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+       if(!$objSelect2)
+       {
+         $response=0;
+       }
+       else{
+         foreach ($objSelect2 as $value) {
+           $response=1;
+         }
+       }
+         return $response;
+
+
+}//function getAnswer
+
+
+public function addScore($exam_path_id,$score,$student_id)
+{
+$checkdata=$this->checkScore($exam_path_id,$score,$student_id);
+  $clsMyDB = new MyDatabase();
+  if ($checkdata==0) {
+    $strinsert ="INSERT INTO  score (student_id,exam_path_id,score) VALUES ('$student_id','$exam_path_id','$score')";
+    $objInsert = $clsMyDB->fncInsertRecord($strinsert);
+    $response[] =
+    [
+      'status' => "add",
+    ];
+  }
+
+return $response;
+}//function addAnswer
+
+
+
+public function checkScore($exam_path_id,$score,$student_id)
+{
+    $clsMyDB = new MyDatabase();
+    $strCondition2 = "
+    SELECT *
+    FROM score
+    WHERE
+    exam_path_id='$exam_path_id'
+    AND
+    student_id='$student_id'
+  ";
+       $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+       if(!$objSelect2)
+       {
+         $response=0;
+       }
+       else{
+         foreach ($objSelect2 as $value) {
+           $response=1;
+         }
+       }
+         return $response;
+
+
+}//function getAnswer
 
 //SELECT *,MAX(score)  FROM choice GROUP BY examination_id
 }

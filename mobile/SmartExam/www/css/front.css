@@ -168,6 +168,7 @@ border-style: solid; border-width: 0.5px; border-image-source: linear-gradient(t
 .testpage_insertword{padding: 22px 11px 22px 20px;}
 .testpage_insertword-head{ font-family: 'rsuregular'; font-size: 25px; text-align: center; color: #4a4a4a; display: block; margin-bottom: 20px;}
 .testpage_insertword-list{margin: 0; height: 479px; overflow: auto; padding-right: 27px;}
+.testpage_insertword-list li{margin-bottom: 12px;}
 .testpage_insertword-list li span{font-size: 12px; text-align: left; color: #4a4a4a; margin-bottom: 30px; display: block; line-height: 2;}
 .testpage_insertword-list li input[type="text"]{width: 170px; border: none; border-bottom: solid 1px #000; padding: 0 15px;}
 .testpage_insertword-list li select{width: 170px; border: none; border-bottom: solid 1px #000; margin: 0 5px; padding-left: 15px;

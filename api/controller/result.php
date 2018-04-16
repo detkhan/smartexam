@@ -20,17 +20,20 @@ public function getStudentSet($param)
       $examination_type_id=$value2['examination_type_id'];
       $examination_type_format_id=$value2['examination_type_format_id'];
       $get_examination=$examinations->getExaminationAnswer($exam_path_id,$examination_type_id,$examination_type_format_id,$student_id);
-      var_dump($exam_path_id);
-  var_dump($get_examination);
+      if ($get_examination=== NULL) {
+      $get_examination=0;
+      }
+
     }
 
 
   }
-
-
-
-  //$data= json_encode($response);
-  //echo $data;
+  $response1[] =
+  [
+    'status' => "success",
+  ];
+  $data= json_encode($response1);
+  echo $data;
 }
 
 
