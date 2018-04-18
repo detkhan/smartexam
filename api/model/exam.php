@@ -95,6 +95,7 @@ public function getRegisterSet($param)
 {
   $student_id=$param['student_id'];
   $exam_id=$param['exam_id'];
+  $total=$this->getSetTotal($exam_id);
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
   SELECT *   FROM `set` a INNER JOIN `register_set` b ON a.set_id = b.set_id  WHERE exam_id='$exam_id' AND student_id='$student_id' AND a.status='1'";
@@ -118,8 +119,27 @@ public function getRegisterSet($param)
            'register_set_id' => $value['register_set_id'],
            'set_id' => $value['set_id'],
            'set_name' => $value['set_name'],
+           'total'=> $value['total'],
            'status' => "success",
          ];
+       }
+     }
+       return $response;
+}
+
+public function getSetTotal($exam_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT count(*)  as total  FROM `set` WHERE exam_id='$exam_id'  AND status='1'";
+     $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+     if(!$objSelect2)
+     {
+       $response =0;
+     }
+     else{
+       foreach ($objSelect2 as $value) {
+         $response=$value['total'];
        }
      }
        return $response;
@@ -317,10 +337,10 @@ public function countExamination($exam_id)
 public function getPrdetail($param)
 {
   $exam_id=$param['exam_id'];
-  $set_id=$this->getSet($exam_id);
+  //$set_id=$this->getSet($exam_id);
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT b.set_id,set_name,c.exam_path_id,exam_path_name,examination_type_id,examination_type_format_id,examination_title
+  SELECT b.set_id,set_name,subject,c.exam_path_id,exam_path_name,examination_type_id,examination_type_format_id,examination_title
   FROM exams a
   INNER JOIN `set` b
   ON a.exam_id=b.exam_id
@@ -328,7 +348,7 @@ public function getPrdetail($param)
   ON b.set_id=c.set_id
   INNER JOIN examination d
   ON c.exam_path_id=d.exam_path_id
-  WHERE a.exam_id='$exam_id' and b.set_id='$set_id'  and d.status='1'    ORDER BY b.set_id,examination_id ASC
+  WHERE a.exam_id='$exam_id'   and d.status='1'    ORDER BY b.set_id,examination_id ASC
   ";
        $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
        if(!$objSelect2)
@@ -351,6 +371,7 @@ public function getPrdetail($param)
            [
              'set_id' => $value['set_id'],
              'set_name' => $value['set_name'],
+             'subject' => $value['subject'],
              'exam_path_id' => $value['exam_path_id'],
              'exam_path_name' => $value['exam_path_name'],
              'examination_title' => $value['examination_title'],

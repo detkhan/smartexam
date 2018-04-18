@@ -47,3 +47,9 @@ document.addEventListener('deviceready', function () {
     }
 
 }, false);
+
+document.addEventListener("offline", onOffline, false);
+
+function onOffline() {
+myApp.alert("ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้", 'SMART EXAM');
+}

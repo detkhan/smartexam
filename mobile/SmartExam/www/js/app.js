@@ -185,7 +185,6 @@ checkRegisterSet(array_data){
         <span>เริ่มสอบ '+time_start+' -  '+time_end+' น.</span>\
       </div>\
       <div class="boardpage_head">\
-        <i class="boardpage_head-mask">ค1</i>\
         <span class="boardpage_head-name">'+subject+'</span>\
         <span class="boardpage_head-deatil">\
           '+short_detail+'\
@@ -198,15 +197,27 @@ checkRegisterSet(array_data){
   var param ={student_id:localStorage.student_id,exam_id:exam_id};
   var url = "http://"+hosturl+"/api/exam/checkRegisterSet/";
   var set_id;
+  var set_name;
 
   $$.getJSON( url,{parameter:param}
   ,function( data ) {
-  content+='\
-  <div class="boardpage_list">\
-    <span>'+data[0].set_name+' มี '+data[0].pathnumber+' ข้อ</span>\
-    <br>\
-  ';
+    var set_total=data[0].path[0].total;
+    if (set_total>1) {
+      content+='\
+      <div class="boardpage_list">\
+        <span>'+data[0].set_name+' มี '+data[0].pathnumber+' ข้อ</span>\
+        <br>\
+      ';
+    }else {
+      content+='\
+      <div class="boardpage_list">\
+        <span>มี '+data[0].pathnumber+' ข้อ</span>\
+        <br>\
+      ';
+    }
+
   var num;
+  set_name=data[0].set_name;
   set_id=data[0].set_id;
   $$.each(data[0].path, function(i, field){
   num=i+1;
@@ -221,7 +232,7 @@ checkRegisterSet(array_data){
   </div>\
   <div class="text-right">\
   <a href="#" class="back_btn small back">BACK</a>\
-  <a id="startexam" href="#" class="next_btn small" student_id="'+localStorage.student_id+'" exam_id="'+exam_id+'"  register_exam_id="'+register_exam_id+'" set_id="'+set_id+'">NEXT</a>\
+  <a id="startexam" href="#" class="next_btn small" student_id="'+localStorage.student_id+'" exam_id="'+exam_id+'"  register_exam_id="'+register_exam_id+'" set_id="'+set_id+'" set_name="'+set_name+'" subject="'+subject+'" >Start</a>\
   </div>\
   </div>\
   </div>\
@@ -243,33 +254,66 @@ sent_exam(exam_id){
 get_prdetail(param){
   console.log(param);
 $$("#content_prdetail").html('');
-var content='';
-    content+='\
-<div class="prpage deatil">\
-  <div class="card prpage_card">\
-  <span class="prpage_testname">Preview Set 2<br>คณิตศาสตร์ 1 เทอม 1 (ชุด 2)</span>\
-  <div class="prpage_detail">\
-';
+var content='<div class="prpage deatil">';
   var url = "http://"+hosturl+"/api/exam/getPrdetail/";
   $$.getJSON( url,{parameter:param}
   ,function( data ) {
+    var exam_path_id='';
+    var set_id='';
+    var num;
+    var number_examination=0;
+  $$.each(data, function(i, field){
+
+if (set_id!=field.set_id) {
+  set_id=field.set_id;
+  num=1;
+if (i==0) {
+  content+='\
+    <div class="card prpage_card">\
+    <span class="prpage_testname">Preview '+field.set_name+'<br>'+field.subject+' ('+field.set_name+')</span>\
+    <div class="prpage_detail">\
+    ';
+}else {
+  content+='\
+  </ul>\
+    <span class="prpage_testname">Preview '+field.set_name+'<br>'+field.subject+' ('+field.set_name+')</span>\
+    <div class="prpage_detail">\
+    ';
+}
+}
+    if(exam_path_id!=field.exam_path_id){
+    exam_path_id=field.exam_path_id;
+    number_examination=1;
+    if (i==0) {
+      content+='\
+      <div class="prpage_preview">\
+           <span class="prpage_preview-head">ส่วนที่ '+num+': '+field.exam_path_name+'  ('+field.score+' คะแนน)</span>\
+           <ul>\
+           ';
+    }else {
+      content+='\
+      </ul>\
+      </div>\
+      <div class="prpage_preview">\
+           <span class="prpage_preview-head">ส่วนที่ '+num+': '+field.exam_path_name+'  ('+field.score+' คะแนน)</span>\
+           <ul>\
+           ';
+    }
+
+num++;
+    }
 content+='\
-<div class="prpage_preview">\
-     <span class="prpage_preview-head">ส่วนที่ 1: เลือกคำตอบที่ถูกต้องที่สุด จากรูปต่อไปนี้ 5 ข้อ (5 คะแนน)</span>\
-     <ul>\
-         <li>แหล่งพลังงานในรูปข้างล่างนี้ ข้อใดถูกต้องที่สุด</li>\
-         <li>แหล่งพลังงานในรูปข้างล่างนี้ ข้อใดถูกต้องที่สุด</li>\
-         <li>แหล่งพลังงานใด (ใน 5 แหล่งนี้ คือ ๑. พลังงานฟอสซิล๒. พลังงานน้ำ๓. พลังงานลม๔. พลังงานนิวเคลีย๕. พลังงานแสงอาทิตย์) ที่มีปัจจัยตัวแปรของสภาพภูมิอากาศมาเกี่ยวข้องในการผลิตพลังงาน</li>\
-         <li>แหล่งพลังงานถ่านหินลิกไนท์ ที่แม่เมาะ จังหวัดลำปาง มีผลกระทบเชิงลบ คืออะไร</li>\
-         <li>แหล่งพลังงานใดที่กล่าวในข้อ 1 ถึง 4 ข้างต้นนี้ ที่ไม่ต้องอาศัยความรู้ทางวิทยาศาสตร์</li>\
-     </ul>\
-</div>\
+         <li>'+number_examination+'. '+field.examination_title+'</li>\
 ';
+number_examination++;
+});//each
 content+='\
+</ul>\
+</div>\
 </div>\
 <div class="text-right">\
   <a href="#" class="back_btn small back">BACK</a>\
-  <a href="examboard.html" class="next_btn small">NEXT</a>\
+  <a id="examboard" href="#examboard"  class="next_btn small" subject="'+param.subject+'" datethainame="'+param.datethainame+'" detail="'+param.detail+'" exam_id="'+param.exam_id+'" time_total="'+param.time_total+'"  time_start="'+param.time_start+'" time_end="'+param.time_end+'" short_detail="'+param.short_detail+'" register_exam_id="'+param.register_exam_id+'">NEXT</a>\
 </div>\
 </div>\
 </div>\
@@ -912,15 +956,22 @@ var student_id=localStorage.student_id;
 var param ={set_id:set_id,student_id:student_id};
 var url = "http://"+hosturl+"/api/examination/getLayout/";
 var content="";
-content+='\
-<div class="selectedpage">\
-  <span class="selectedpage_note">"Select numeral and go (Green color is done)"</span>\
-  <div class="selectedpage_choice">\
-';
+
 var path=0;
 var num=0;
 $$.getJSON( url,{parameter:param}
 ,function( data ) {
+  content+='\
+  <div class="selectedpage">\
+    <div class="selectedpage_choice">\
+    <div class="text-left">\
+    <a id="submit" exam_id="'+data[0].exam_id+'" examination_count="'+data.examination_count+'"  countanswer="'+data.countanswer+'" href="" class="next_btn">\
+      <i class="f7-icons">arrow_up</i>\
+      Submit your exam\
+    </a>\
+    </div>\
+    <span class="selectedpage_note">"Select numeral and go (Green color is done)"</span>\
+  ';
 $$.each(data, function(i, field){
 if (path!=field.exam_path_id) {
 path=field.exam_path_id;
@@ -937,15 +988,9 @@ content+='\
 <span class="selectedpage_choice-head">Part '+num+':'+field.exam_path_name+'</span>\
 </div>\
 <div class="col-50">\
-<div class="text-right">\
 ';
 if (num==1) {
   content+='\
-    <a id="submit" exam_id="'+field.exam_id+'" examination_count="'+data.examination_count+'"  countanswer="'+data.countanswer+'" href="" class="next_btn">\
-      <i class="f7-icons">arrow_up</i>\
-      Submit your exam\
-    </a>\
-  </div>\
   </div>\
   </div>\
   <div class="selectedpage_choice-list">\
@@ -1382,13 +1427,21 @@ $$(document).on("click", "#examboard", function() {
 });//click prpage_detail
 
 $$(document).on("click", "#startexam", function() {
-var register_exam_id=$$(this).attr("register_exam_id");
-var set_id=$$(this).attr("set_id");
-var exam_id=$$(this).attr("exam_id");
-var student_id=$$(this).attr("student_id");
-var ojb_time_exam=new TimeExam();
-ojb_time_exam.checkTimeExam(register_exam_id,set_id,exam_id,student_id);
+  var register_exam_id=$$(this).attr("register_exam_id");
+  var set_id=$$(this).attr("set_id");
+  var set_name=$$(this).attr("set_name");
+  var subject=$$(this).attr("subject");
+  var exam_id=$$(this).attr("exam_id");
+  var student_id=$$(this).attr("student_id");
+myApp.confirm('Did you choose '+subject+'('+set_name+')','SMART EXAM',function () {
+  var ojb_time_exam=new TimeExam();
+  ojb_time_exam.checkTimeExam(register_exam_id,set_id,exam_id,student_id);
+},function () {
+
+});
 });//click login
+
+
 
 $$(document).on("click", "#next_btn", function() {
 var  examination_type_id=$$(this).attr("examination_type_id");
@@ -1747,6 +1800,7 @@ var countanswer=$$(this).attr("countanswer");
 var examination_count=$$(this).attr("examination_count");
 if (examination_count==countanswer) {
   myApp.confirm("คุณแน่ใจว่าจะส่งข้อสอบ เพราะส่งแล้วจะกลับมาแก้ไขไม่ได้",'SMART EXAM',function () {
+    clearInterval(x);
 var ojb_exam=new Exam();
     ojb_exam.sent_exam(exam_id);
     var ojb_user=new User();
