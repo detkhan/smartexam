@@ -242,11 +242,39 @@ sent_exam(exam_id){
 
 get_prdetail(param){
   console.log(param);
-
+$$("#content_prdetail").html('');
+var content='';
+    content+='\
+<div class="prpage deatil">\
+  <div class="card prpage_card">\
+  <span class="prpage_testname">Preview Set 2<br>คณิตศาสตร์ 1 เทอม 1 (ชุด 2)</span>\
+  <div class="prpage_detail">\
+';
   var url = "http://"+hosturl+"/api/exam/getPrdetail/";
   $$.getJSON( url,{parameter:param}
   ,function( data ) {
-
+content+='\
+<div class="prpage_preview">\
+     <span class="prpage_preview-head">ส่วนที่ 1: เลือกคำตอบที่ถูกต้องที่สุด จากรูปต่อไปนี้ 5 ข้อ (5 คะแนน)</span>\
+     <ul>\
+         <li>แหล่งพลังงานในรูปข้างล่างนี้ ข้อใดถูกต้องที่สุด</li>\
+         <li>แหล่งพลังงานในรูปข้างล่างนี้ ข้อใดถูกต้องที่สุด</li>\
+         <li>แหล่งพลังงานใด (ใน 5 แหล่งนี้ คือ ๑. พลังงานฟอสซิล๒. พลังงานน้ำ๓. พลังงานลม๔. พลังงานนิวเคลีย๕. พลังงานแสงอาทิตย์) ที่มีปัจจัยตัวแปรของสภาพภูมิอากาศมาเกี่ยวข้องในการผลิตพลังงาน</li>\
+         <li>แหล่งพลังงานถ่านหินลิกไนท์ ที่แม่เมาะ จังหวัดลำปาง มีผลกระทบเชิงลบ คืออะไร</li>\
+         <li>แหล่งพลังงานใดที่กล่าวในข้อ 1 ถึง 4 ข้างต้นนี้ ที่ไม่ต้องอาศัยความรู้ทางวิทยาศาสตร์</li>\
+     </ul>\
+</div>\
+';
+content+='\
+</div>\
+<div class="text-right">\
+  <a href="#" class="back_btn small back">BACK</a>\
+  <a href="examboard.html" class="next_btn small">NEXT</a>\
+</div>\
+</div>\
+</div>\
+';
+$$("#content_prdetail").append(content);
 });//getJson
 
 }//get_prdetail
@@ -1335,25 +1363,6 @@ var register_exam_id=$$(this).attr("register_exam_id");
 var param={exam_id:exam_id,subject:subject,detail:detail,time_start:time_start,time_end:time_end,datethainame:datethainame,short_detail:short_detail,time_total:time_total,register_exam_id:register_exam_id};
 var ojb_exam=new Exam();
 ojb_exam.get_prdetail(param);
-
-$$("#content_prdetail").html('');
-var content='\
-<div class="prpage deatil">\
-  <div class="card prpage_card">\
-  <span class="prpage_testname">'+subject+'</span>\
-  <div class="prpage_detail">\
-    <span>\
-    '+detail+'\
-    </span>\
-  </div>\
-  <div class="text-right">\
-    <a href="#" class="back_btn small back">BACK</a>\
-    <a id="examboard" href="#examboard" exam_id="'+exam_id+'" short_detail="'+short_detail+'" time_total="'+time_total+'" time_start="'+time_start+'"  time_end="'+time_end+'" subject="'+subject+'" datethainame="'+datethainame+'" register_exam_id="'+register_exam_id+'" class="next_btn small">NEXT</a>\
-  </div>\
-</div>\
-</div>\
-';
-$$("#content_prdetail").append(content);
 });//click prpage_detail
 
 $$(document).on("click", "#examboard", function() {

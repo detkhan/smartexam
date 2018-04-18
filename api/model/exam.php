@@ -1,6 +1,7 @@
 <?php
 require_once("model/database.php");
 require_once("model/examination.php");
+require_once("controller/choice.php");
 class exams
 {
 
@@ -316,9 +317,10 @@ public function countExamination($exam_id)
 public function getPrdetail($param)
 {
   $exam_id=$param['exam_id'];
+  $set_id=$this->getSet($exam_id);
   $clsMyDB = new MyDatabase();
   $strCondition2 = "
-  SELECT b.set_id,set_name,exam_path_name,examination_type_id,examination_title
+  SELECT b.set_id,set_name,c.exam_path_id,exam_path_name,examination_type_id,examination_type_format_id,examination_title
   FROM exams a
   INNER JOIN `set` b
   ON a.exam_id=b.exam_id
@@ -326,7 +328,7 @@ public function getPrdetail($param)
   ON b.set_id=c.set_id
   INNER JOIN examination d
   ON c.exam_path_id=d.exam_path_id
-  WHERE a.exam_id='$exam_id' and d.status='1'    ORDER BY b.set_id,examination_id ASC
+  WHERE a.exam_id='$exam_id' and b.set_id='$set_id'  and d.status='1'    ORDER BY b.set_id,examination_id ASC
   ";
        $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
        if(!$objSelect2)
@@ -334,14 +336,26 @@ public function getPrdetail($param)
   $response=0;
        }
        else{
+         $exam_path_id='';
+         $examination_type_id='';
+         $examination_type_format_id='';
+         $score='';
          foreach ($objSelect2 as $value) {
+           if ($exam_path_id!=$value['exam_path_id']) {
+            $exam_path_id=$value['exam_path_id'];
+            $examination_type_id=$value['examination_type_id'];
+            $examination_type_format_id=$value['examination_type_format_id'];
+            $score=$this->getScorePath($exam_path_id,$examination_type_id,$examination_type_format_id);
+           }
            $response[] =
            [
              'set_id' => $value['set_id'],
              'set_name' => $value['set_name'],
+             'exam_path_id' => $value['exam_path_id'],
              'exam_path_name' => $value['exam_path_name'],
              'examination_title' => $value['examination_title'],
              'examination_type_id' => $value['examination_type_id'],
+             'score' => $score,
              'status' => "success",
            ];
          }
@@ -350,7 +364,62 @@ public function getPrdetail($param)
 
 }//  function getPrdetail
 
+
+public function getSet($exam_id)
+{
+  $clsMyDB = new MyDatabase();
+  $strCondition2 = "
+  SELECT set_id
+  FROM  `set`
+  WHERE exam_id='$exam_id'  ORDER BY set_id ASC LIMIT 0,1;
+  ";
+       $objSelect2 = $clsMyDB->fncSelectRecord($strCondition2);
+       if(!$objSelect2)
+       {
+  $response=0;
+       }
+       else{
+         foreach ($objSelect2 as $value) {
+           $response=$value['set_id'];
+         }
+       }
+         return $response;
+       }//function getSet
+
+public function getScorePath($exam_path_id,$examination_type_id,$examination_type_format_id)
+{
+  //$ojb_examination=new Examination;
+  $ojb_choice=new choice();
+  $ojb_examinations=new examinations();
+switch ($examination_type_id) {
+  case '1':
+$score=$ojb_choice->getscore($exam_path_id);
+    break;
+
+    case '2':
+$score=$ojb_examinations->getScorePath($exam_path_id);
+      break;
+      case '3':
+      if ($examination_type_format_id==7) {
+      $score=$ojb_choice->getscoreFill($exam_path_id);
+      }else {
+      $score=$ojb_examinations->getscoreFillFill($exam_path_id);
+      }
+        break;
+        case '4':
+$score=$ojb_choice->getscore($exam_path_id);
+          break;
+          case '5':
+$score=$ojb_examinations->getScoreFill($exam_path_id);
+            break;
+}
+return $score;
+}//function getScorePath
+
+
+}//class
+
 //SELECT *   FROM exams a INNER JOIN `set` b ON a.exam_id=b.exam_id INNER JOIN exam_path c ON b.set_id=c.set_id  INNER JOIN examination d ON c.exam_path_id=d.exam_path_id WHERE examination_id<'1'  ORDER BY d.exam_path_id,examination_id ASC LIMIT 0,1
 
-}
+
 ?>
