@@ -303,7 +303,7 @@ if (i==0) {
 num++;
     }
 content+='\
-         <li>'+number_examination+'. '+field.examination_title+'</li>\
+         <li>'+field.examination_title+'</li>\
 ';
 number_examination++;
 });//each
@@ -311,10 +311,10 @@ content+='\
 </ul>\
 </div>\
 </div>\
+</div>\
 <div class="text-right">\
   <a href="#" class="back_btn small back">BACK</a>\
   <a id="examboard" href="#examboard"  class="next_btn small" subject="'+param.subject+'" datethainame="'+param.datethainame+'" detail="'+param.detail+'" exam_id="'+param.exam_id+'" time_total="'+param.time_total+'"  time_start="'+param.time_start+'" time_end="'+param.time_end+'" short_detail="'+param.short_detail+'" register_exam_id="'+param.register_exam_id+'">NEXT</a>\
-</div>\
 </div>\
 </div>\
 ';
@@ -497,6 +497,7 @@ content+='\
 
     });//each
     content+='\
+    <div class="overflow_choice"></div>\
     </ul>\
     </div>\
     </div>\
@@ -963,14 +964,13 @@ $$.getJSON( url,{parameter:param}
 ,function( data ) {
   content+='\
   <div class="selectedpage">\
-    <div class="selectedpage_choice">\
-    <div class="text-left">\
-    <a id="submit" exam_id="'+data[0].exam_id+'" examination_count="'+data.examination_count+'"  countanswer="'+data.countanswer+'" href="" class="next_btn">\
-      <i class="f7-icons">arrow_up</i>\
-      Submit your exam\
-    </a>\
-    </div>\
-    <span class="selectedpage_note">"Select numeral and go (Green color is done)"</span>\
+  <div class="text-left">\
+  <a id="submit" exam_id="'+data[0].exam_id+'" examination_count="'+data.examination_count+'"  countanswer="'+data.countanswer+'" href="" class="next_btn">\
+    <i class="f7-icons">arrow_up</i>\
+    Submit your exam\
+  </a>\
+  </div>\
+  <span class="selectedpage_note">"Select numeral and go (Green color is done)"</span>\
   ';
 $$.each(data, function(i, field){
 if (path!=field.exam_path_id) {
@@ -978,28 +978,27 @@ path=field.exam_path_id;
 if (num>0) {
   content+='\
 </div>\
+</div>\
   ';
 }
 num++;
 if (field.exam_path_name) {
 content+='\
+<div class="selectedpage_choice">\
 <div class="row">\
   <div class="col-50">\
 <span class="selectedpage_choice-head">Part '+num+':'+field.exam_path_name+'</span>\
 </div>\
 <div class="col-50">\
+</div>\
+</div>\
 ';
 if (num==1) {
   content+='\
-  </div>\
-  </div>\
   <div class="selectedpage_choice-list">\
   ';
 }else {
   content+='\
-  </div>\
-  </div>\
-  </div>\
   <div class="selectedpage_choice-list">\
   ';
 }//else
@@ -1135,6 +1134,9 @@ if (content=="") {
 console.log('content='+content);
 }else {
   content+='\
+  <div class="text-right">\
+      <a href="#" class="back_btn back">BACK</a>\
+</div>\
 </div>\
   ';
   $$("#content_choice").append(content);
@@ -1195,7 +1197,7 @@ starttime(date_start,date_end){
       var num=0;
       $$("#counttime").html("");
   // Update the count down every 1 second
-  var x = setInterval(function() {
+  x = setInterval(function() {
 var countDownDate = new Date(date_end).getTime();
 var now = new Date(date_start).getTime();
     var distance = countDownDate - parseInt(now)-num;
@@ -1779,6 +1781,7 @@ $$(document).on("click", "#get_logout", function() {
   localStorage.removeItem("student_id");
   localStorage.removeItem("student_code");
   localStorage.removeItem("fullname");
+        clearInterval(x);
   mainView.router.load({pageName: 'login',ignoreCache:true});
 });//click LOGOUT
 

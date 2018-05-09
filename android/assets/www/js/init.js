@@ -23,8 +23,8 @@ var mySwiper = myApp.swiper('.swiper-container', {
 });
 */
 
-//var hosturl="127.0.0.1/smartexam";
-var hosturl="smartexam.revoitmarketing.com";
+var hosturl="127.0.0.1/smartexam";
+//var hosturl="smartexam.revoitmarketing.com";
 //var hosturl="192.168.1.104/apk";
 document.addEventListener('deviceready', function () {
     // Android customization
@@ -36,16 +36,28 @@ document.addEventListener('deviceready', function () {
       if (cordova.plugins.backgroundMode.wakeUp()) {
         alert("test");
       }
-      var num=1;
       //cordova.plugins.backgroundMode.unlock(alert("wakeup"));
         setTimeout(function () {
             // Modify the currently displayed notification
 
             cordova.plugins.backgroundMode.configure({
-                text:'คุณกำลังสอบอยู่เวลากำลังดำเนินการไปเรื่อย ๆ คุณออกจากโปรแกรมมาแล้ว '+num+' นาที'
+                text:'คุณกำลังสอบอยู่เวลากำลังดำเนินการไปเรื่อย ๆ '
             });
-            num++;
-        }, 60000);
+        }, 5000);
     }
 
 }, false);
+
+document.addEventListener("offline", onOffline, false);
+
+function onOffline() {
+myApp.alert("ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้", 'SMART EXAM');
+mainView.router.load({pageName: 'No_network',ignoreCache:true});
+}
+
+document.addEventListener("online", onOnline, false);
+
+function onOnline() {
+  myApp.alert("เชื่อมต่ออินเตอร์เน็ตได้", 'SMART EXAM');
+  mainView.router.load({pageName: 'prpage',ignoreCache:true});
+}

@@ -421,3 +421,4 @@ animation-delay: 1.5s;
 
   .overflow_choice{width: 0; height: 0; border-top: 10px solid #ddd; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: none; position: absolute; left: 0; right: 0; margin: auto; bottom: 5px;}
 }
+.testpage_choice li .choice > font {max-width: 226px; vertical-align: top;}
