@@ -23,9 +23,11 @@ var mySwiper = myApp.swiper('.swiper-container', {
 });
 */
 
-var hosturl="127.0.0.1/smartexam";
-//var hosturl="smartexam.revoitmarketing.com";
+//var hosturl="127.0.0.1/smartexam";
+var hosturl="smartexam.revoitmarketing.com";
 //var hosturl="192.168.1.104/apk";
+var connect="yes";
+var x;
 document.addEventListener('deviceready', function () {
     // Android customization
     cordova.plugins.backgroundMode.setDefaults({ text:'คุณกำลังสอบอยู่เวลากำลังดำเนินการไปเรื่อย ๆ '});
@@ -47,17 +49,21 @@ document.addEventListener('deviceready', function () {
     }
 
 }, false);
-
 document.addEventListener("offline", onOffline, false);
 
 function onOffline() {
 myApp.alert("ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้", 'SMART EXAM');
+connect="no";
 mainView.router.load({pageName: 'No_network',ignoreCache:true});
 }
 
 document.addEventListener("online", onOnline, false);
 
 function onOnline() {
-  myApp.alert("เชื่อมต่ออินเตอร์เน็ตได้", 'SMART EXAM');
-  mainView.router.load({pageName: 'prpage',ignoreCache:true});
+  if (connect=="no") {
+    connect="yes";
+    myApp.alert("เชื่อมต่ออินเตอร์เน็ตได้", 'SMART EXAM');
+    mainView.router.load({pageName: 'prpage',ignoreCache:true});
+  }
+
 }

@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/Applications/AMPPS/www/smartexam/android/CordovaLib/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/Applications/AMPPS/www/smartexam/android/CordovaLib/src/debug/shaders"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="C:\Program Files (x86)\Ampps\www\android\CordovaLib\src\main\shaders"/></dataSet><dataSet config="debug"><source path="C:\Program Files (x86)\Ampps\www\android\CordovaLib\src\debug\shaders"/></dataSet></merger>

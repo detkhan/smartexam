@@ -249,8 +249,8 @@ dependencies {
     // SUB-PROJECT DEPENDENCIES START
     //debugCompile(project(path: "CordovaLib", configuration: "debug"))
     //releaseCompile(project(path: "CordovaLib", configuration: "release"))
-    // SUB-PROJECT DEPENDENCIES END
     compile project(':CordovaLib')
+    // SUB-PROJECT DEPENDENCIES END
 }
 
 def promptForReleaseKeyPassword() {
